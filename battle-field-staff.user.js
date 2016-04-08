@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com/*/military/battlefield-new/*
-// @version      0.1
+// @version      0.1.1
 // @description  try to take over the world!
 // @author       SvetBG
 // @grant        none
-// @run-at		document-start
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
