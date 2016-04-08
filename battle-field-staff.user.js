@@ -3,9 +3,9 @@
 // @include      *www.erepublik.com/*/military/battlefield-new/*
 // @version      0.1
 // @description  try to take over the world!
-// @author       You
-// @match        http://*/*
+// @author       SvetBG
 // @grant        none
+// @run-at		document-start
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
@@ -15,7 +15,7 @@ var bId = SERVER_DATA.battleId
 var currentZoneId = SERVER_DATA.zoneId
 var countryId = SERVER_DATA.countryId, invert = SERVER_DATA.mustInvert, fighterDivision = SERVER_DATA.division
 var $ = jQuery
-var previousDomination = 0
+var dominationPoints = 0
 
 var container = $('div.clock_holder')
 container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
@@ -43,6 +43,16 @@ function getRegion()
 function setTitle(currDomination)
 {
     document.title = currDomination + ' | ' + getRegion()
+}
+
+function getDominationPoints()
+{
+    return dominationPoints
+}
+
+function setDominationPoints(domPoints)
+{
+    dominationPoints = domPoints
 }
 
 function parseBattleInfo(t)
@@ -81,14 +91,16 @@ function parseBattleInfo(t)
         
         var red = '#FC4444'
         var blue = '#67BEDB'
-        var dominationColor = prettyDecimal(leftDomPoints[iii], 0) > 50 ? blue : red
+        var dominationColor = prettyDecimal(leftDomPoints[iii], 2) > 50 ? blue : red
         
         div[iii] = '<strong style="padding: 2px 0 2px 2px; border-right: 1px solid white; text-align: left; width: 33%; display: inline-block; color: '+blue+'">'+division[leftBattleId][iii]['domination'] + 
             '</strong>  <i style="padding: 2px 0; width: 17%; display: inline-block; text-align: center; font-size: 11px; font-weight: 900; color: '+dominationColor+'">' + prettyDecimal(leftDomPoints[iii], 0) + 
             '</i>  <strong style="padding: 2px 2px 2px 0; border-left: 1px solid white; text-align: right; width: 33%; display: inline-block; color: '+red+'">' + division[rightBattleId][iii]['domination'] + '</strong>'
     }
     
-    document.title = leftDomPoints[fighterDivision] + ' | ' + getRegion()
+    //setDominationPoints(leftDomPoints[fighterDivision])
+    $(document).prop('title', leftDomPoints[fighterDivision] + ' | ' + getRegion())
+    //document.title = leftDomPoints[fighterDivision] + ' | ' + getRegion()
     
     // build the html to be appended to the battle field view
     var dominationHtml = ''
@@ -134,8 +146,9 @@ function prettyDecimal(uglyDecimal, decimals = 2)
 
 function refreshData()
 {
-    var x = 30  // 5 Seconds
+    var x = 30  // 30 Seconds
     init()
+    //setTimeout($(document).prop('title', getDominationPoints() + ' | ' + getRegion()), 1000)
     // Do your thing here
 
     setTimeout(refreshData, x*1000)
@@ -160,4 +173,3 @@ function getBlueDomination()
 {
     return $('#blue_domination').val()
 }
-
