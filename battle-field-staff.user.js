@@ -155,7 +155,7 @@ function startHuntingProduct()
     }
     
     checkWRM()
-    huntProduct = setInterval(checkWRM, 10000)
+    huntProduct = setInterval(checkWRM, 30000)
 }
 
 function improveMarket()
@@ -164,26 +164,21 @@ function improveMarket()
     countrySelect.after('<div><button id="startHunting">Start Hunting</button> Price: <input id="desired_price"/> Qty: <input id="desired_qty"/></div>')
 }
 
-function getCurrentIndustryId()
+function getHashInfo()
 {
-    var locHash = location.hash.substr(1)
-    return locHash.split('/')[1]
-}
-
-function getCurrentCountryId()
-{
-    var locHash = location.hash.substr(1)
-    return locHash.split('/')[0]
+    return location.hash.substr(1)
 }
     
 
 function checkWRM()
 {
-    var currentIndustryId = getCurrentIndustryId()
-    var currentCountryId = getCurrentCountryId()
+    var hashInfo = getHashInfo().split('/')
+    var currentIndustryId = hashInfo[1]
+    var currentCountryId = hashInfo[0]
+    var qualityId = hashInfo[2]
     
     $.ajax({
-            url: "/" + LANG + "/economy/marketplace?countryId="+currentCountryId+"&industryId="+currentIndustryId+"&quality=1&orderBy=price_asc&currentPage=1&ajaxMarket=1",
+            url: "/" + LANG + "/economy/marketplace?countryId="+currentCountryId+"&industryId="+currentIndustryId+"&quality="+qualityId+"&orderBy=price_asc&currentPage=1&ajaxMarket=1",
         })
         .success(function(p) {
             var offers = jQuery.parseJSON(p)
