@@ -197,10 +197,12 @@ function checkWRM()
                     // Stop loop if the price is not good
                     if (pricer > desired_price) {
                         console.log('Price is not good: ' + pricer)
+                        return false
                     }
 
                     if (desired_qty < 1) {
                         console.log('Qty is 0')
+                        return false
                     }
 
                     var allowedAmount = desired_qty
