@@ -10,7 +10,7 @@
 
 var LANG = 'en'
 if (erepublik != undefined) {
-//    LANG = erepublik.settings.culture
+    LANG = erepublik.settings.culture
 }
 var bId = SERVER_DATA.battleId
 var currentZoneId = SERVER_DATA.zoneId
