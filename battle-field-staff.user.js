@@ -1,28 +1,31 @@
 // ==UserScript==
 // @name         Battle Field Staff
-// @include      *www.erepublik.com/*/military/battlefield-new/*
-// @version      0.1.1
-// @description  try to take over the world!
+// @include      *www.erepublik.com*
+// @version      0.1.2
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
 
-var LANG = erepublik.settings.culture
+var LANG = 'en'
+if (erepublik != undefined) {
+//    LANG = erepublik.settings.culture
+}
 var bId = SERVER_DATA.battleId
 var currentZoneId = SERVER_DATA.zoneId
 var countryId = SERVER_DATA.countryId, invert = SERVER_DATA.mustInvert, fighterDivision = SERVER_DATA.division
 var $ = jQuery
 var dominationPoints = 0
+var huntProduct = null
 
 var container = $('div.clock_holder')
 container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
 
 function init()
-{
+{    
     if (!bId) {
-        console.log('Not on a battle page!')
+        //console.log('Not on a battle page!')
         return false
     }
     
@@ -143,19 +146,109 @@ function prettyDecimal(uglyDecimal, decimals = 2)
     return parseFloat(uglyDecimal).toFixed(decimals)
 }
 
+function startHuntingProduct()
+{
+    if (huntProduct != null) {
+        clearInterval(huntProduct)
+        huntProduct = null
+        return false
+    }
+    
+    checkWRM()
+    huntProduct = setInterval(checkWRM, 10000)
+}
+
+function improveMarket()
+{
+    var countrySelect = $('div.country-select')
+    countrySelect.after('<div><button id="startHunting">Start Hunting</button> Price: <input id="desired_price"/> Qty: <input id="desired_qty"/></div>')
+}
+
+function getCurrentIndustryId()
+{
+    var locHash = location.hash.substr(1)
+    return locHash.split('/')[1]
+}
+
+function getCurrentCountryId()
+{
+    var locHash = location.hash.substr(1)
+    return locHash.split('/')[0]
+}
+    
+
+function checkWRM()
+{
+    var currentIndustryId = getCurrentIndustryId()
+    var currentCountryId = getCurrentCountryId()
+    
+    $.ajax({
+            url: "/" + LANG + "/economy/marketplace?countryId="+currentCountryId+"&industryId="+currentIndustryId+"&quality=1&orderBy=price_asc&currentPage=1&ajaxMarket=1",
+        })
+        .success(function(p) {
+            var offers = jQuery.parseJSON(p)
+            var timeout = 0
+            $(offers).each(function(id, offer) {
+                var timer = setTimeout(function() {
+                    var pricer = parseFloat(offer.priceWithTaxes)
+                    var desired_price = parseFloat($('#desired_price').val()) || 0
+                    var desired_qty = parseFloat($('#desired_qty').val()) || 0
+
+                    // Stop loop if the price is not good
+                    if (pricer > desired_price) {
+                        console.log('Price is not good: ' + pricer)
+                    }
+
+                    if (desired_qty < 1) {
+                        console.log('Qty is 0')
+                    }
+
+                    var allowedAmount = desired_qty
+                    var offerId = offer.id
+                    var amount = parseInt(offer.amount) > allowedAmount ? allowedAmount : parseInt(offer.amount)
+                    var buyAction = 1
+                    var token = $('#award_token').val()
+                    var data = {'amount': amount, 'offerId': offerId, 'buyAction': 1, '_token': token, 'orderBy': 'price_asc', 'currentPage': 1}
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/" + LANG + "/economy/marketplace",
+                        data: data
+                    })
+                        .success(function(r) {
+                        var updateQty = desired_qty - amount
+                        if (updateQty <= 0) {
+                            console.log('Bought ' + amount + ' pieces. Stop hunting!')
+                            $('#startHunting').trigger('click')
+                            updateQty = 0
+                        }
+                        $('#desired_qty').val(updateQty)
+                    })
+                }, timeout + 300)
+                timeout += 300
+            })
+        })
+    
+}
+
 function refreshData()
 {
     var x = 30  // 30 Seconds
     init()
-    //setTimeout($(document).prop('title', getDominationPoints() + ' | ' + getRegion()), 1000)
-    // Do your thing here
 
     setTimeout(refreshData, x*1000)
 }
 
 $( document ).ready(function() {
     refreshData()
-    //setInterval(init, 30000)
+    improveMarket()
+    
+    $('#startHunting').click(function(e){
+        var btnHtml = $(this).html() == 'Start Hunting' ? 'Stop Hunting' : 'Start Hunting'        
+        $(this).html(btnHtml)
+        
+        startHuntingProduct()
+    })
 });
 
 /*
