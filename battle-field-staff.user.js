@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.2
+// @version      0.1.3
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -60,7 +60,7 @@ function setDominationPoints(domPoints)
 function parseBattleInfo(t)
 {
     var res = jQuery.parseJSON(t)
-    if (res == undefined || res.stats == undefined) {
+    if (res === undefined || res.stats === undefined) {
         console.log('No stats!')
         return false;
     }
@@ -72,11 +72,11 @@ function parseBattleInfo(t)
         return false;
     }
     
-    updateTop5(current)
-    
     var division = res.division
     
     var domination = division.domination
+    var zoneSituation = res.battle_zone_situation
+    
     var leftDomPoints = [], rightDomPoints = [], div = [], color = []
     
     // prepare each division domination and each side current points
@@ -94,9 +94,10 @@ function parseBattleInfo(t)
         var red = '#FC4444'
         var blue = '#67BEDB'
         var dominationColor = prettyDecimal(leftDomPoints[iii], 2) > 50 ? blue : red
+        var epic = zoneSituation[iii] == 2 ? 'yellow' : ''
         
         div[iii] = '<strong style="padding: 2px 0 2px 2px; border-right: 1px solid white; text-align: left; width: 33%; display: inline-block; color: '+blue+'">'+division[leftBattleId][iii]['domination'] + 
-            '</strong>  <i style="padding: 2px 0; width: 17%; display: inline-block; text-align: center; font-size: 11px; font-weight: 900; color: '+dominationColor+'">' + prettyDecimal(leftDomPoints[iii], 0) + 
+            '</strong>  <i style="padding: 2px 0; width: 17%; display: inline-block; text-align: center; font-size: 11px; font-weight: 900; color: '+dominationColor+'; background-color: ' + epic + '">' + prettyDecimal(leftDomPoints[iii], 0) + 
             '</i>  <strong style="padding: 2px 2px 2px 0; border-left: 1px solid white; text-align: right; width: 33%; display: inline-block; color: '+red+'">' + division[rightBattleId][iii]['domination'] + '</strong>'
     }
     
@@ -155,7 +156,7 @@ function startHuntingProduct()
     }
     
     checkWRM()
-    huntProduct = setInterval(checkWRM, 30000)
+    huntProduct = setInterval(checkWRM, 10000)
 }
 
 function improveMarket()
@@ -214,8 +215,9 @@ function checkWRM()
                     })
                         .success(function(r) {
                         var updateQty = desired_qty - amount
+                        console.log('Bought ' + amount + ' pieces at ' + pricer)
                         if (updateQty <= 0) {
-                            console.log('Bought ' + amount + ' pieces. Stop hunting!')
+                            console.log('Bought all amount wanted. Stop hunting!')
                             $('#startHunting').trigger('click')
                             updateQty = 0
                         }
