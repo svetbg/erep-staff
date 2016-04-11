@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.3
+// @version      0.1.4
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -92,9 +92,9 @@ function parseBattleInfo(t)
         }
         
         var red = '#FC4444'
-        var blue = '#67BEDB'
+        var blue = '#5178ED'
         var dominationColor = prettyDecimal(leftDomPoints[iii], 2) > 50 ? blue : red
-        var epic = zoneSituation[iii] == 2 ? 'yellow' : ''
+        var epic = zoneSituation[iii] == 2 ? '#EEC164' : (zoneSituation[iii] == 1 ? '#90744F' : '')
         
         div[iii] = '<strong style="padding: 2px 0 2px 2px; border-right: 1px solid white; text-align: left; width: 33%; display: inline-block; color: '+blue+'">'+division[leftBattleId][iii]['domination'] + 
             '</strong>  <i style="padding: 2px 0; width: 17%; display: inline-block; text-align: center; font-size: 11px; font-weight: 900; color: '+dominationColor+'; background-color: ' + epic + '">' + prettyDecimal(leftDomPoints[iii], 0) + 
@@ -120,10 +120,10 @@ function parseBattleInfo(t)
         
         if (dominationInfoIdx < 3) {
             left = (dominationInfoIdx-1) * elongationHorizontal
-            dominationHtml += '<div class="div_'+dominationInfoIdx+'" style="position: absolute; left: '+left+'px; top: '+elongationVertical+'px; border: 1px solid white; width: '+divWidth+'px;'+backgroundColor+'">' + dominationInfo + '</div>'
+            dominationHtml += '<div class="div_'+dominationInfoIdx+'" style="position: absolute; left: '+left+'px; top: '+elongationVertical+'px; border: 1px solid white; width: '+divWidth+'px;'+backgroundColor+'; border-radius: 3px;">' + dominationInfo + '</div>'
         } else if (dominationInfoIdx > 2) {
             right = Math.abs(dominationInfoIdx - 4) * elongationHorizontal
-            dominationHtml += '<div class="div_'+dominationInfoIdx+'" style="position: absolute; right: '+right+'px; top: '+elongationVertical+'px; border: 1px solid white; width: '+divWidth+'px;'+backgroundColor+'">' + dominationInfo + '</div>'
+            dominationHtml += '<div class="div_'+dominationInfoIdx+'" style="position: absolute; right: '+right+'px; top: '+elongationVertical+'px; border: 1px solid white; width: '+divWidth+'px;'+backgroundColor+'; border-radius: 3px;">' + dominationInfo + '</div>'
         }
         
     })
