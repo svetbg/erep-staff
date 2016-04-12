@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.8
+// @version      0.1.9
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -248,7 +248,9 @@ $( document ).ready(function() {
     
     //battleId = 75945
     //pomelo.disconnect()
-    var battles = {};battles[bId]=battles[bId]||{};battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
+    var battles = JSON.parse(localStorage.getItem('eS_BATTLE'))||{};
+    battles[bId]=battles[bId]||{};
+    battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
     
     //connectBattleSocket()
     if("undefined"!=typeof pomelo) {
@@ -258,7 +260,8 @@ $( document ).ready(function() {
             var pDmg = parseInt(data.msg.damage)
             battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
             battles[bId][currentZoneId][pSide][pDiv]+=pDmg
-
+            localStorage.setItem('eS_BATTLE',JSON.stringify(battles))
+            
             if (pSide==leftBattleId&&pDiv==fighterDivision){console.log(data.name+': '+pDmg)}
         })
 
