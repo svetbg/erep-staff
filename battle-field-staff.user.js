@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.4
+// @version      0.1.5
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -9,7 +9,7 @@
 'use strict';
 
 var LANG = 'en'
-if (erepublik != undefined) {
+if (typeof erepublik != "undefined") {
     LANG = erepublik.settings.culture
 }
 var bId = SERVER_DATA.battleId
@@ -248,6 +248,29 @@ $( document ).ready(function() {
         
         startHuntingProduct()
     })
+    
+    //battleId = 75945
+    //pomelo.disconnect()
+    
+    setTimeout(function() {
+        //connectBattleSocket()
+        if("undefined"!=typeof pomelo) {
+            pomelo.on('onMessage', function(data) {
+                console.log('onMessage')
+                console.log(data)
+            })
+
+            pomelo.on('onError', function(data) {
+                console.log('Error')
+                console.log(data)
+            })
+
+            pomelo.on('onAdd', function(data) {
+                console.log('onAdd')
+                console.log(data)
+            })
+        }
+    }, 1)
 });
 
 /*
