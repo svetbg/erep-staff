@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.5
+// @version      0.1.6
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -133,14 +133,6 @@ function parseBattleInfo(t)
     $('div.domination-info').fadeIn('fast')
 }
 
-function updateTop5(current)
-{
-    //console.log(battleStats.getBattleStats())
-    //console.log(current[currentZoneId])
-    var currDiv = $('#eRS_division').val()
-    
-}
-
 function prettyDecimal(uglyDecimal, decimals = 2)
 {
     //uglyDecimal = Math.round(uglyDecimal)
@@ -156,13 +148,18 @@ function startHuntingProduct()
     }
     
     checkWRM()
-    huntProduct = setInterval(checkWRM, 10000)
+    var interval = parseInt($('#desired_interval').val()) > 0 ? parseInt($('#desired_interval').val()) * 1e3 : 1e4 
+    huntProduct = setInterval(checkWRM, interval)
 }
 
 function improveMarket()
 {
     var countrySelect = $('div.country-select')
-    countrySelect.after('<div><button id="startHunting">Start Hunting</button> Price: <input id="desired_price"/> Qty: <input id="desired_qty"/></div>')
+    countrySelect.after('<div><a class="std_global_btn smallSize blueColor buyOffer" id="startHunting" style="width: 120px; padding: 0px 0px 7px 10px; margin-right: 5px;">Start Hunting</a> '
+                        +'Price: <input id="desired_price" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
+                        +'Qty: <input id="desired_qty" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
+                        +'Interval: <select id="desired_interval" style="width: 70px; height: auto" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched">'
+                        +'<option value="3">3 sec</option><option value="5">5 sec</option><option value="10">10 sec</option><option value="30">30 sec</option></select></div>')
 }
 
 function getHashInfo()
@@ -223,8 +220,8 @@ function checkWRM()
                         }
                         $('#desired_qty').val(updateQty)
                     })
-                }, timeout + 300)
-                timeout += 300
+                }, timeout + 200)
+                timeout += 200
             })
         })
     
