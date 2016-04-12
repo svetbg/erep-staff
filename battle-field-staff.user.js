@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.6
+// @version      0.1.7
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -248,13 +248,18 @@ $( document ).ready(function() {
     
     //battleId = 75945
     //pomelo.disconnect()
-    
+    var battles = {};battles[bId]=battles[bId]||{};battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
     setTimeout(function() {
         //connectBattleSocket()
         if("undefined"!=typeof pomelo) {
             pomelo.on('onMessage', function(data) {
-                console.log('onMessage')
-                console.log(data)
+                var pDiv = parseInt(data.division)
+                var pSide = parseInt(data.side)
+                var pDmg = parseInt(data.msg.damage)
+                battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
+                battles[bId][currentZoneId][pSide][pDiv]+=pDmg
+                
+                if (pSide==leftBattleId&&pDiv==fighterDivision){console.log(data.name+': '+pDmg)}
             })
 
             pomelo.on('onError', function(data) {
