@@ -284,8 +284,8 @@ $( document ).ready(function() {
         })
         
         var divDmgInfoCont=$('div#pvp')
-        divDmgInfoCont.after('<div class="div_dmg_left" style="width:100px;position:absolute;top:0px;z-index:350;left:-120px;color:black;"></div>')
-        divDmgInfoCont.after('<div class="div_dmg_right" style="width:100px;position:absolute;top:0px;right:-120px;z-index:350;color:black;"></div>')
+        divDmgInfoCont.after('<div class="div_dmg_left" style="width:150px;position:absolute;top:0px;z-index:350;left:-180px;color:black;"></div>')
+        divDmgInfoCont.after('<div class="div_dmg_right" style="width:150px;position:absolute;top:0px;right:-165px;z-index:350;color:black;"></div>')
 
         setInterval(function(){
             var leftI='',rightI='';
