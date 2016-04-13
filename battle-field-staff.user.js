@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.10
+// @version      0.2.0
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -248,19 +248,21 @@ $( document ).ready(function() {
     
     //battleId = 75945
     //pomelo.disconnect()
-    var battles = JSON.parse(localStorage.getItem('eS_BATTLE'))||{};
-    battles[bId]=battles[bId]||{};
-    battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
+    
     
     //connectBattleSocket()
     if("undefined"!=typeof pomelo) {
+        var battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
+        battles[bId]=battles[bId]||{};
+        battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
+        
         pomelo.on('onMessage', function(data) {
             var pDiv = parseInt(data.division)
             var pSide = parseInt(data.side)
             var pDmg = parseInt(data.msg.damage)
             battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
             battles[bId][currentZoneId][pSide][pDiv]+=pDmg
-            localStorage.setItem('eS_BATTLE',JSON.stringify(battles))
+            localStorage.setItem('eS_BATTLE'+bId,JSON.stringify(battles))
             
             if (pSide==leftBattleId&&pDiv==fighterDivision){console.log(data.name+': '+pDmg)}
         })
@@ -276,8 +278,8 @@ $( document ).ready(function() {
         })
         
         var divDmgInfoCont=$('div#pvp')
-        divDmgInfoCont.after('<div class="div_dmg_left" style="width:100px;position:absolute;top:0px;z-index:350;left:-120px;color:black;">123</div>')
-        divDmgInfoCont.after('<div class="div_dmg_right" style="width:100px;position:absolute;top:0px;right:-120px;z-index:350;color:black;">321</div>')
+        divDmgInfoCont.after('<div class="div_dmg_left" style="width:100px;position:absolute;top:0px;z-index:350;left:-120px;color:black;"></div>')
+        divDmgInfoCont.after('<div class="div_dmg_right" style="width:100px;position:absolute;top:0px;right:-120px;z-index:350;color:black;"></div>')
 
         setInterval(function(){
             var leftI='',rightI='';
