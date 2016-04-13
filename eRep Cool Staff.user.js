@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Battle Field Staff
+// @name         eRep Cool Staff
 // @include      *www.erepublik.com*
 // @version      0.2.1
 // @author       SvetBG
