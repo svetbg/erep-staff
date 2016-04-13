@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.1.9
+// @version      0.1.10
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -274,20 +274,22 @@ $( document ).ready(function() {
             console.log('onAdd')
             console.log(data)
         })
+        
+        var divDmgInfoCont=$('div#pvp')
+        divDmgInfoCont.after('<div class="div_dmg_left" style="width:100px;position:absolute;top:0px;z-index:350;left:-120px;color:black;">123</div>')
+        divDmgInfoCont.after('<div class="div_dmg_right" style="width:100px;position:absolute;top:0px;right:-120px;z-index:350;color:black;">321</div>')
+
+        setInterval(function(){
+            var leftI='',rightI='';
+            for (var i=1;i<5;i++) {
+                leftI+='Div'+i+': '+((battles[bId][currentZoneId][leftBattleId]&&battles[bId][currentZoneId][leftBattleId][i])||0).toLocaleString()+'<br />'
+                rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+'<br />'
+            }
+            $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
+        }, 1e3)
     }
     
-    var divDmgInfoCont=$('div#pvp')
-    divDmgInfoCont.after('<div class="div_dmg_left" style="width:100px;position:absolute;top:0px;z-index:350;left:-120px;color:black;">123</div>')
-    divDmgInfoCont.after('<div class="div_dmg_right" style="width:100px;position:absolute;top:0px;right:-120px;z-index:350;color:black;">321</div>')
     
-    setInterval(function(){
-        var leftI='',rightI='';
-        for (var i=1;i<5;i++) {
-            leftI+='Div'+i+': '+((battles[bId][currentZoneId][leftBattleId]&&battles[bId][currentZoneId][leftBattleId][i])||0).toLocaleString()+'<br />'
-            rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+'<br />'
-        }
-        $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
-    }, 1e3)
 });
 
 /*
