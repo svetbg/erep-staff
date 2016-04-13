@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Battle Field Staff
 // @include      *www.erepublik.com*
-// @version      0.2.0
+// @version      0.2.1
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -210,7 +210,13 @@ function checkWRM()
                         url: "/" + LANG + "/economy/marketplace",
                         data: data
                     })
-                        .success(function(r) {
+                    .success(function(r) {
+                        var res = JSON.parse(r)
+                        if (res.error !== false) {
+                            console.log(res)
+                            console.log('There was an error buying the product!')
+                            return false;
+                        }
                         var updateQty = desired_qty - amount
                         console.log('Bought ' + amount + ' pieces at ' + pricer)
                         if (updateQty <= 0) {
