@@ -16,7 +16,7 @@ var bId = SERVER_DATA.battleId
 var currentZoneId = SERVER_DATA.zoneId
 var countryId = SERVER_DATA.countryId, invert = SERVER_DATA.mustInvert, fighterDivision = SERVER_DATA.division
 var $ = jQuery
-var dominationPoints = 0
+var dominationPoints = 0,epicChange=[]
 var huntProduct = null
 
 var container = $('div.clock_holder')
@@ -95,6 +95,12 @@ function parseBattleInfo(t)
         var blue = '#5178ED'
         var dominationColor = prettyDecimal(leftDomPoints[iii], 2) > 50 ? blue : red
         var epic = zoneSituation[iii] == 2 ? '#EEC164' : (zoneSituation[iii] == 1 ? '#90744F' : '')
+        epicChange[iii]=epicChange[iii]||0
+        if (epicChange[iii] != zoneSituation[iii]) {
+            console.log('Battle went from ' + (epicChange[iii]) + ' to ' + zoneSituation[iii])
+            console.log('Div ' + iii + ' total dmg is: ' + ((battles[bId][currentZoneId][leftBattleId][iii]+battles[bId][currentZoneId][rightBattleId][iii])||0).toLocaleString())
+            epicChange[iii] = zoneSituation[iii]
+        }
         
         div[iii] = '<strong style="padding: 2px 0 2px 2px; border-right: 1px solid white; text-align: left; width: 33%; display: inline-block; color: '+blue+'">'+division[leftBattleId][iii]['domination'] + 
             '</strong>  <i style="padding: 2px 0; width: 17%; display: inline-block; text-align: center; font-size: 11px; font-weight: 900; color: '+dominationColor+'; background-color: ' + epic + '">' + prettyDecimal(leftDomPoints[iii], 0) + 
@@ -241,6 +247,8 @@ function refreshData()
     setTimeout(refreshData, x*1000)
 }
 
+var battles = {}
+var battle_start_check_interval = ''
 $( document ).ready(function() {
     refreshData()
     improveMarket()
@@ -258,7 +266,7 @@ $( document ).ready(function() {
     
     //connectBattleSocket()
     if("undefined"!=typeof pomelo) {
-        var battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
+         battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
         battles[bId]=battles[bId]||{};
         battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
         
@@ -270,7 +278,7 @@ $( document ).ready(function() {
             battles[bId][currentZoneId][pSide][pDiv]+=pDmg
             localStorage.setItem('eS_BATTLE'+bId,JSON.stringify(battles))
             
-            if (pSide==leftBattleId&&pDiv==fighterDivision){console.log(data.name+': '+pDmg)}
+            if (pSide==leftBattleId&&pDiv==fighterDivision){/*console.log(data.name+': '+pDmg+', '+data.msg.health)*/}
         })
 
         pomelo.on('onError', function(data) {
@@ -295,10 +303,36 @@ $( document ).ready(function() {
             }
             $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
         }, 1e3)
+        
+        
+        battle_start_check_interval = setInterval(fightFirst, 5e2)
     }
     
     
 });
+
+function fightFirst()
+{
+    if (!$('em#time_until span').html()) {
+        return false
+    }
+    
+    var time_until = $('em#time_until span').html().trim()
+    var fight_btn = $('#fight_btn')
+    var hits = 5
+    if (time_until == '00:00') {
+        clearInterval(battle_start_check_interval)
+        var times = 0;
+        var fight_interval = setInterval(function(){
+            console.log('Fight ' + times + '!')
+            times++
+            if (times == hits)
+                clearInterval(fight_interval)
+        }, parseInt('1F4', 16))
+    } else {
+        console.log(time_until)
+    }
+}
 
 /*
 var target = document.querySelector('head > title');
