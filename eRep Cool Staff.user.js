@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         eRep Cool Staff
 // @include      *www.erepublik.com*
-// @version      0.2.1
+// @version      0.2.2
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -14,7 +14,7 @@ if (typeof erepublik != "undefined") {
 }
 var bId = SERVER_DATA.battleId
 var currentZoneId = SERVER_DATA.zoneId
-var countryId = SERVER_DATA.countryId, invert = SERVER_DATA.mustInvert, fighterDivision = SERVER_DATA.division
+var countryId = SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,smart=true
 var $ = jQuery
 var dominationPoints = 0,epicChange=[]
 var huntProduct = null
@@ -97,7 +97,7 @@ function parseBattleInfo(t)
         var epic = zoneSituation[iii] == 2 ? '#EEC164' : (zoneSituation[iii] == 1 ? '#90744F' : '')
         epicChange[iii]=epicChange[iii]||0
         if (epicChange[iii] != zoneSituation[iii]) {
-            console.log('Battle went from ' + (epicChange[iii]) + ' to ' + zoneSituation[iii])
+            console.log('Div ' + iii + ' battle went from ' + (epicChange[iii]) + ' to ' + zoneSituation[iii])
             console.log('Div ' + iii + ' total dmg is: ' + ((battles[bId][currentZoneId][leftBattleId][iii]+battles[bId][currentZoneId][rightBattleId][iii])||0).toLocaleString())
             epicChange[iii] = zoneSituation[iii]
         }
@@ -165,7 +165,7 @@ function improveMarket()
                         +'Price: <input id="desired_price" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
                         +'Qty: <input id="desired_qty" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
                         +'Interval: <select id="desired_interval" style="width: 70px; height: auto" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched">'
-                        +'<option value="3">3 sec</option><option value="5">5 sec</option><option value="10">10 sec</option><option value="30">30 sec</option></select></div>')
+                        +'<option value="3">3 sec</option><option value="5">5 sec</option><option value="10">10 sec</option><option value="30">30 sec</option><option value="60">60 sec</option></select></div>')
 }
 
 function getHashInfo()
@@ -185,31 +185,16 @@ function checkWRM()
             url: "/" + LANG + "/economy/marketplace?countryId="+currentCountryId+"&industryId="+currentIndustryId+"&quality="+qualityId+"&orderBy=price_asc&currentPage=1&ajaxMarket=1",
         })
         .success(function(p) {
-            var offers = jQuery.parseJSON(p)
-            var timeout = 0
+            var offers=jQuery.parseJSON(p)
+            var timeout=0
+            var desired_price=parseFloat($('#desired_price').val())||0,desired_qty = parseFloat($('#desired_qty').val())||0
             $(offers).each(function(id, offer) {
                 var timer = setTimeout(function() {
                     var pricer = parseFloat(offer.priceWithTaxes)
-                    var desired_price = parseFloat($('#desired_price').val()) || 0
-                    var desired_qty = parseFloat($('#desired_qty').val()) || 0
+                    if(pricer>desired_price){console.log('Price is not good: ' + pricer);return false}
+                    if(desired_qty<1){console.log('Qty is 0');return false}
 
-                    // Stop loop if the price is not good
-                    if (pricer > desired_price) {
-                        console.log('Price is not good: ' + pricer)
-                        return false
-                    }
-
-                    if (desired_qty < 1) {
-                        console.log('Qty is 0')
-                        return false
-                    }
-
-                    var allowedAmount = desired_qty
-                    var offerId = offer.id
-                    var amount = parseInt(offer.amount) > allowedAmount ? allowedAmount : parseInt(offer.amount)
-                    var buyAction = 1
-                    var token = $('#award_token').val()
-                    var data = {'amount': amount, 'offerId': offerId, 'buyAction': 1, '_token': token, 'orderBy': 'price_asc', 'currentPage': 1}
+                    var allowedAmount = desired_qty,offerId = offer.id,amount=parseInt(offer.amount)>allowedAmount?allowedAmount:parseInt(offer.amount),buyAction=1,token=$('#award_token').val(),data={'amount':amount,'offerId':offerId,'buyAction':1,'_token':token,'orderBy':'price_asc','currentPage':1}
 
                     $.ajax({
                         type: "POST",
@@ -232,8 +217,8 @@ function checkWRM()
                         }
                         $('#desired_qty').val(updateQty)
                     })
-                }, timeout + 200)
-                timeout += 200
+                }, timeout + 10)
+                timeout += 10
             })
         })
     
@@ -266,7 +251,7 @@ $( document ).ready(function() {
     
     //connectBattleSocket()
     if("undefined"!=typeof pomelo) {
-         battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
+        battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
         battles[bId]=battles[bId]||{};
         battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
         
@@ -276,7 +261,7 @@ $( document ).ready(function() {
             var pDmg = parseInt(data.msg.damage)
             battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
             battles[bId][currentZoneId][pSide][pDiv]+=pDmg
-            localStorage.setItem('eS_BATTLE'+bId,JSON.stringify(battles))
+            1==!smart&&parseInt("F0",17)>Math.pow(2,7)&&localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles))
             
             if (pSide==leftBattleId&&pDiv==fighterDivision){/*console.log(data.name+': '+pDmg+', '+data.msg.health)*/}
         })
@@ -302,6 +287,7 @@ $( document ).ready(function() {
                 rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+'<br />'
             }
             $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
+            1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles))
         }, 1e3)
         
         
