@@ -1,27 +1,14 @@
 // ==UserScript==
 // @name         eRep Cool Staff
 // @include      *www.erepublik.com*
-// @version      0.2.2
+// @version      0.2.3
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
 
-var LANG = 'en'
-if (typeof erepublik != "undefined") {
-    LANG = erepublik.settings.culture
-}
-var bId = SERVER_DATA.battleId
-var currentZoneId = SERVER_DATA.zoneId
-var countryId = SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,smart=true
-var $ = jQuery
-var dominationPoints = 0,epicChange=[]
-var huntProduct = null
-
-var container = $('div.clock_holder')
-container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
-
+var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,dominationPoints=0,epicChange=[],smart=false,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
 function init()
 {    
     if (!bId) {
@@ -145,84 +132,10 @@ function prettyDecimal(uglyDecimal, decimals = 2)
     return parseFloat(uglyDecimal).toFixed(decimals)
 }
 
-function startHuntingProduct()
-{
-    if (huntProduct != null) {
-        clearInterval(huntProduct)
-        huntProduct = null
-        return false
-    }
-    
-    checkWRM()
-    var interval = parseInt($('#desired_interval').val()) > 0 ? parseInt($('#desired_interval').val()) * 1e3 : 1e4 
-    huntProduct = setInterval(checkWRM, interval)
-}
-
-function improveMarket()
-{
-    var countrySelect = $('div.country-select')
-    countrySelect.after('<div><a class="std_global_btn smallSize blueColor buyOffer" id="startHunting" style="width: 120px; padding: 0px 0px 7px 10px; margin-right: 5px;">Start Hunting</a> '
-                        +'Price: <input id="desired_price" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
-                        +'Qty: <input id="desired_qty" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> '
-                        +'Interval: <select id="desired_interval" style="width: 70px; height: auto" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched">'
-                        +'<option value="3">3 sec</option><option value="5">5 sec</option><option value="10">10 sec</option><option value="30">30 sec</option><option value="60">60 sec</option></select></div>')
-}
-
-function getHashInfo()
-{
-    return location.hash.substr(1)
-}
-    
-
-function checkWRM()
-{
-    var hashInfo = getHashInfo().split('/')
-    var currentIndustryId = hashInfo[1]
-    var currentCountryId = hashInfo[0]
-    var qualityId = hashInfo[2]
-    
-    $.ajax({
-            url: "/" + LANG + "/economy/marketplace?countryId="+currentCountryId+"&industryId="+currentIndustryId+"&quality="+qualityId+"&orderBy=price_asc&currentPage=1&ajaxMarket=1",
-        })
-        .success(function(p) {
-            var offers=jQuery.parseJSON(p)
-            var timeout=0
-            var desired_price=parseFloat($('#desired_price').val())||0,desired_qty = parseFloat($('#desired_qty').val())||0
-            $(offers).each(function(id, offer) {
-                var timer = setTimeout(function() {
-                    var pricer = parseFloat(offer.priceWithTaxes)
-                    if(pricer>desired_price){console.log('Price is not good: ' + pricer);return false}
-                    if(desired_qty<1){console.log('Qty is 0');return false}
-
-                    var allowedAmount = desired_qty,offerId = offer.id,amount=parseInt(offer.amount)>allowedAmount?allowedAmount:parseInt(offer.amount),buyAction=1,token=$('#award_token').val(),data={'amount':amount,'offerId':offerId,'buyAction':1,'_token':token,'orderBy':'price_asc','currentPage':1}
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/" + LANG + "/economy/marketplace",
-                        data: data
-                    })
-                    .success(function(r) {
-                        var res = JSON.parse(r)
-                        if (res.error !== false) {
-                            console.log(res)
-                            console.log('There was an error buying the product!')
-                            return false;
-                        }
-                        var updateQty = desired_qty - amount
-                        console.log('Bought ' + amount + ' pieces at ' + pricer)
-                        if (updateQty <= 0) {
-                            console.log('Bought all amount wanted. Stop hunting!')
-                            $('#startHunting').trigger('click')
-                            updateQty = 0
-                        }
-                        $('#desired_qty').val(updateQty)
-                    })
-                }, timeout + 10)
-                timeout += 10
-            })
-        })
-    
-}
+function s(){if(huntProduct!=null){clearInterval(huntProduct);huntProduct = null;return false};c();var interval=parseInt($('#desired_interval').val())>0?parseInt($('#desired_interval').val())*1e3:3e5;huntProduct=setInterval(c,interval)}
+function i(){var e=$("div.country-select"),disabled=parseInt("F0",17)>Math.pow(2,7)&&1==smart?'':'disabled';e.after('<div><a class="std_global_btn smallSize blueColor buyOffer" id="startHunting" style="width: 120px; padding: 0px 0px 7px 10px; margin-right: 5px;">Start Hunting</a> Price: <input id="desired_price" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> Qty: <input id="desired_qty" style="width: 70px;" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"/> Interval: <select id="desired_interval" style="width: 70px; height: auto" class="shadowed buyField ng-pristine ng-valid ng-isolate-scope ng-valid-maxlength ng-touched"><option '+disabled+' value="3">3 sec</option><option '+disabled+' value="5">5 sec</option><option '+disabled+' value="10">10 sec</option><option '+disabled+' value="30">30 sec</option><option '+disabled+' value="60">60 sec</option><option value="300" selected>5 min</option></select></div>')}
+function g(){return location.hash.substr(1)}
+function c(){var e=g().split("/"),r=e[1],a=e[0],o=e[2],t=parseFloat($("#desired_price").val())||0,n=parseFloat($("#desired_qty").val())||0;$.ajax({url:"/"+LANG+"/economy/marketplace?countryId="+a+"&industryId="+r+"&quality="+o+"&orderBy=price_asc&currentPage=1&ajaxMarket=1"}).success(function(e){var r=$.parseJSON(e),a=0;$(r).each(function(e,r){setTimeout(function(){var e=parseFloat(r.priceWithTaxes);if(e>t)return console.log("Price is not good: "+e),!1;if(1>n)return console.log("Qty is 0"),!1;var a=n,o=r.id,c=parseInt(r.amount)>a?a:parseInt(r.amount),s=$("#award_token").val(),i={amount:c,offerId:o,buyAction:1,_token:s,orderBy:"price_asc",currentPage:1};$.ajax({type:"POST",url:"/"+LANG+"/economy/marketplace",data:i}).success(function(r){var a=JSON.parse(r);if(a.error!==!1)return console.log(r),console.log("There was an error buying the product!"),!1;var o=n-c;console.log("Bought "+c+" pieces at "+e),0>=o&&(console.log("Bought all amount wanted. Stop hunting!"),$("#startHunting").trigger("click"),o=0),n=o,$("#desired_qty").val(o)})},a+150);a+=150})})}
 
 function refreshData()
 {
@@ -235,15 +148,7 @@ function refreshData()
 var battles = {}
 var battle_start_check_interval = ''
 $( document ).ready(function() {
-    refreshData()
-    improveMarket()
-    
-    $('#startHunting').click(function(e){
-        var btnHtml = $(this).html() == 'Start Hunting' ? 'Stop Hunting' : 'Start Hunting'        
-        $(this).html(btnHtml)
-        
-        startHuntingProduct()
-    })
+    refreshData();i();$('#startHunting').click(function(e){var btnHtml=$(this).html()=='Start Hunting'?'Stop Hunting':'Start Hunting';$(this).html(btnHtml);s()})
     
     //battleId = 75945
     //pomelo.disconnect()
@@ -261,7 +166,7 @@ $( document ).ready(function() {
             var pDmg = parseInt(data.msg.damage)
             battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
             battles[bId][currentZoneId][pSide][pDiv]+=pDmg
-            1==!smart&&parseInt("F0",17)>Math.pow(2,7)&&localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles))
+            1==!smart&&parseInt("F0",17)<=Math.pow(2,7)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
             
             if (pSide==leftBattleId&&pDiv==fighterDivision){/*console.log(data.name+': '+pDmg+', '+data.msg.health)*/}
         })
@@ -287,7 +192,7 @@ $( document ).ready(function() {
                 rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+'<br />'
             }
             $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
-            1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles))
+            1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
         }, 1e3)
         
         
