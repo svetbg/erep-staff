@@ -8,7 +8,7 @@
 /* jshint -W097 */
 'use strict';
 
-var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,dominationPoints=0,epicChange=[],smart=true,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
+var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,dominationPoints=0,epicChange=[],smart=false,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
 function init()
 {    
     if (!bId) {
@@ -250,7 +250,7 @@ function he()
     var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*60)/100)
     setTimeout(function(){st(h,m)},1e3)
     setInterval(function(){
-        m=m-1;
+        m=m==0?59:m-1;h=m==59?h-1:h;
         st(h,m)
         
     },6e4)
