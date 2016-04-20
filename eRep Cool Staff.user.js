@@ -246,7 +246,7 @@ function he()
 {
     if("undefined"==typeof reset_health_to_recover||"undefined"==typeof globalNS.userInfo.wellness||"undefined"==typeof globalNS.userInfo.energyPerInterval){return false};
     var htr=2*reset_health_to_recover-globalNS.userInfo.wellness
-    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))-(new_date/3600)
+    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))-((360/3600)-(new_date/3600))
     var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*60)/100)
     setTimeout(function(){st(h,m)},1e3)
     setInterval(function(){
