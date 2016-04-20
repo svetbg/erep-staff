@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         eRep Cool Staff
 // @include      *www.erepublik.com*
-// @version      0.2.4
+// @version      0.2.5
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -148,7 +148,8 @@ function refreshData()
 var battles = {}
 var battle_start_check_interval = ''
 $( document ).ready(function() {
-    refreshData();i();$('#startHunting').click(function(e){var btnHtml=$(this).html()=='Start Hunting'?'Stop Hunting':'Start Hunting';$(this).html(btnHtml);s()})
+    $('div.user_section').after('<div id="ecsuh" style="font: bold 11px arial;padding: 0 0 7px; float: left; margin: 0; width: 155px; border-bottom: 1px solid #dfdfdf;"></div>')
+    refreshData();i();$('#startHunting').click(function(e){var btnHtml=$(this).html()=='Start Hunting'?'Stop Hunting':'Start Hunting';$(this).html(btnHtml);s()});he();
     
     //battleId = 75945
     //pomelo.disconnect()
@@ -238,4 +239,25 @@ observer.observe(target, { subtree: true, characterData: true, childList: true }
 function getBlueDomination()
 {
     return $('#blue_domination').val()
+}
+
+function he()
+{
+    if("undefined"==typeof reset_health_to_recover||"undefined"==typeof globalNS.userInfo.wellness||"undefined"==typeof globalNS.userInfo.energyPerInterval){return false};
+    var htr=2*reset_health_to_recover-globalNS.userInfo.wellness
+    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))
+    var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*6)/10)
+    setTimeout(function(){st(h,m)},1e3)
+    setInterval(function(){
+        m=m-1;
+        st(h,m)
+        
+    },6e4)
+    
+}
+function st(h,m)
+{
+    1==m.lenght&&(m='0'+m)
+    var cont = $('#ecsuh')
+    cont.html('<div><strong style="color: #666; float: left;">Time to full health: </strong><span style="float: right">'+h+':'+m+'</span></div>')
 }
