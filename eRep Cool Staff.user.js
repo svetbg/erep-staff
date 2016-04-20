@@ -126,8 +126,9 @@ function parseBattleInfo(t)
     $('div.domination-info').fadeIn('fast')
 }
 
-function prettyDecimal(uglyDecimal, decimals = 2)
+function prettyDecimal(uglyDecimal, decimals)
 {
+    decimals = typeof decimals !== 'undefined' ? decimals : 2;
     //uglyDecimal = Math.round(uglyDecimal)
     return parseFloat(uglyDecimal).toFixed(decimals)
 }
