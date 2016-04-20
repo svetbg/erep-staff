@@ -8,7 +8,7 @@
 /* jshint -W097 */
 'use strict';
 
-var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,dominationPoints=0,epicChange=[],smart=false,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
+var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,dominationPoints=0,epicChange=[],smart=true,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
 function init()
 {    
     if (!bId) {
