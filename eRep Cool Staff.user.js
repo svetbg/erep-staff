@@ -246,8 +246,8 @@ function he()
 {
     if("undefined"==typeof reset_health_to_recover||"undefined"==typeof globalNS.userInfo.wellness||"undefined"==typeof globalNS.userInfo.energyPerInterval){return false};
     var htr=2*reset_health_to_recover-globalNS.userInfo.wellness
-    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))
-    var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*6)/10)
+    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))-(new_date/3600)
+    var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*60)/100)
     setTimeout(function(){st(h,m)},1e3)
     setInterval(function(){
         m=m-1;
@@ -258,7 +258,7 @@ function he()
 }
 function st(h,m)
 {
-    1==m.lenght&&(m='0'+m)
+    1==m.toString().length&&(m='0'+m)
     var cont = $('#ecsuh')
     cont.html('<div><strong style="color: #666; float: left;">Time to full health: </strong><span style="float: right">'+h+':'+m+'</span></div>')
 }
