@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         eRep Cool Staff
 // @include      *www.erepublik.com*
-// @version      0.2.6
+// @version      0.2.7
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
 
-var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,prem=!1,dominationPoints=0,epicChange=[],smart=true,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
+var LANG="en";"undefined"!=typeof erepublik&&(LANG=erepublik.settings.culture);var bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,invert=SERVER_DATA.mustInvert,fighterDivision=SERVER_DATA.division,$=jQuery,prem=!0,dominationPoints=0,epicChange=[],smart=true,huntProduct=null,container=$('div.clock_holder');container.after('<div class="domination-info" style="color: white; display: block; font-size: 13px;"></div>')
 function init()
 {    
     if (!bId) {
@@ -212,7 +212,7 @@ function fightFirst()
     
     var time_until = $('em#time_until span').html().trim()
     var fight_btn = $('#fight_btn')
-    var hits = 3
+    var hits = 5
     if (time_until == '00:00') {
         clearInterval(battle_start_check_interval)
         var times = 0;
@@ -221,10 +221,9 @@ function fightFirst()
             times++
             if (times == hits)
                 clearInterval(fight_interval)
-        }, parseInt('1F4', 16))
+        }, parseInt('226', 16))
     } else {
-        //console.log(fight_btn)
-        console.log(time_until)
+        !0==smart&&!!!0==prem&&console.log(time_until)
     }
 }
 
