@@ -246,8 +246,6 @@ function he()
 {
     if("undefined"==typeof reset_health_to_recover||"undefined"==typeof globalNS.userInfo.wellness||"undefined"==typeof globalNS.userInfo.energyPerInterval){return false};
     var fr="undefined"==typeof food_remaining?0:food_remaining;
-    console.log(fr)
-    console.log(globalNS.userInfo.wellness)
     var htr=2*reset_health_to_recover-(globalNS.userInfo.wellness+fr)
     var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))-((360/3600)-(new_date/3600))
     var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*60)/100)
