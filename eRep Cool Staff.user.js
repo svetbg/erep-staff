@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         eRep Cool Staff
 // @include      *www.erepublik.com*
-// @version      0.2.8
+// @version      0.2.9
 // @author       SvetBG
 // @grant        none
 // ==/UserScript==
@@ -247,8 +247,8 @@ function he()
     if("undefined"==typeof reset_health_to_recover||"undefined"==typeof globalNS.userInfo.wellness||"undefined"==typeof globalNS.userInfo.energyPerInterval){return false};
     var fr="undefined"==typeof food_remaining?0:food_remaining;
     var htr=2*reset_health_to_recover-(globalNS.userInfo.wellness+fr)
-    var ttr=(htr/(globalNS.userInfo.energyPerInterval*10))-((360/3600)-(new_date/3600))
-    var h=Math.floor(ttr),m=parseInt((((ttr%h)*100)*60)/100)
+    var ttr=globalNS.userInfo.energyPerInterval>0?((htr/(globalNS.userInfo.energyPerInterval*10))-((360/3600)-(new_date/3600))):0
+    var h=Math.floor(ttr),m=parseInt((((ttr-h)*100)*60)/100)
     setTimeout(function(){st(h,m)},1e3)
     setInterval(function(){
         m=m==0?59:m-1;h=m==59?h-1:h;
