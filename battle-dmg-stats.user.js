@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BattleDmgStats
 // @include      *www.erepublik.com*
-// @version      0.1
+// @version      0.2
 // @description  BattleDmgStats
 // @author       SvetBG
 // @grant        none
@@ -10,7 +10,8 @@
 (function() {
     'use strict';
 
-    var battles = {},battle_start_check_interval = '',smart=0,bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,fighterDivision=SERVER_DATA.division,$=jQuery
+    var battles = {},battle_start_check_interval = '',smart=1,bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,fighterDivision=SERVER_DATA.division,$=jQuery
+    var leftBattleId=SERVER_DATA.leftBattleId,rightBattleId=SERVER_DATA.rightBattleId
     
     $( document ).ready(function() {
         //battleId = 75945
