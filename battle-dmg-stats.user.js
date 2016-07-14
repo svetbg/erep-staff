@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BattleDmgStats
 // @include      *www.erepublik.com*
-// @version      0.2
+// @version      0.3
 // @description  BattleDmgStats
 // @author       SvetBG
 // @grant        none
@@ -22,6 +22,7 @@
             battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
             battles[bId]=battles[bId]||{};
             battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
+            players = JSON.parse(localStorage.getItem('eS_BATLEPLAYERS'+bId))||{};
             players[bId]=players[bId]||{}
             players[bId][currentZoneId]=players[bId][currentZoneId]||{}
 
@@ -62,6 +63,7 @@
                 }
                 $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
                 1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
+                1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATLEPLAYERS"+bId,JSON.stringify(players)))
             }, 1e3)
         }
     });
