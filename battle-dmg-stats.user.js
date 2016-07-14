@@ -35,7 +35,7 @@
                 players[bId][currentZoneId][pSide]=players[bId][currentZoneId][pSide]||{},players[bId][currentZoneId][pSide][pDiv]=players[bId][currentZoneId][pSide][pDiv]||{},players[bId][currentZoneId][pSide][pDiv][playerId]=players[bId][currentZoneId][pSide][pDiv][playerId]||0;
                 battles[bId][currentZoneId][pSide][pDiv]+=pDmg
                 players[bId][currentZoneId][pSide][pDiv][playerId]+=pDmg
-                console.log(players[bId][currentZoneId][pSide][pDiv][playerId])
+                
                 1==!smart&&parseInt("F0",17)<=Math.pow(2,7)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
                 
                 if (pSide==leftBattleId&&pDiv==fighterDivision){/*console.log(data.name+': '+pDmg+', '+data.msg.health)*/}
