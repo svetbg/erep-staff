@@ -11,7 +11,7 @@
     'use strict';
 
     var battles = {},battle_start_check_interval = '',smart=1,bId=SERVER_DATA.battleId,currentZoneId=SERVER_DATA.zoneId,countryId=SERVER_DATA.countryId,fighterDivision=SERVER_DATA.division,$=jQuery
-    var leftBattleId=SERVER_DATA.leftBattleId,rightBattleId=SERVER_DATA.rightBattleId
+    var leftBattleId=SERVER_DATA.leftBattleId,rightBattleId=SERVER_DATA.rightBattleId,players={}
     
     $( document ).ready(function() {
         //battleId = 75945
@@ -22,15 +22,21 @@
             battles = JSON.parse(localStorage.getItem('eS_BATTLE'+bId))||{};
             battles[bId]=battles[bId]||{};
             battles[bId][currentZoneId]=battles[bId][currentZoneId]||{}
+            players[bId]=players[bId]||{}
+            players[bId][currentZoneId]=players[bId][currentZoneId]||{}
 
             pomelo.on('onMessage', function(data) {
                 var pDiv = parseInt(data.division)
                 var pSide = parseInt(data.side)
                 var pDmg = parseInt(data.msg.damage)
+                var playerId = parseInt(data.msg.citizenId)
                 battles[bId][currentZoneId][pSide]=battles[bId][currentZoneId][pSide]||{},battles[bId][currentZoneId][pSide][pDiv]=battles[bId][currentZoneId][pSide][pDiv]||0;
+                players[bId][currentZoneId][pSide]=players[bId][currentZoneId][pSide]||{},players[bId][currentZoneId][pSide][pDiv]=players[bId][currentZoneId][pSide][pDiv]||{},players[bId][currentZoneId][pSide][pDiv][playerId]=players[bId][currentZoneId][pSide][pDiv][playerId]||0;
                 battles[bId][currentZoneId][pSide][pDiv]+=pDmg
+                players[bId][currentZoneId][pSide][pDiv][playerId]+=pDmg
+                console.log(players[bId][currentZoneId][pSide][pDiv][playerId])
                 1==!smart&&parseInt("F0",17)<=Math.pow(2,7)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
-
+                
                 if (pSide==leftBattleId&&pDiv==fighterDivision){/*console.log(data.name+': '+pDmg+', '+data.msg.health)*/}
             })
 
@@ -51,8 +57,8 @@
             setInterval(function(){
                 var leftI='',rightI='';
                 for (var i=1;i<5;i++) {
-                    leftI+='Div'+i+': '+((battles[bId][currentZoneId][leftBattleId]&&battles[bId][currentZoneId][leftBattleId][i])||0).toLocaleString()+'<br />'
-                    rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+'<br />'
+                    leftI+='Div'+i+': '+((battles[bId][currentZoneId][leftBattleId]&&battles[bId][currentZoneId][leftBattleId][i])||0).toLocaleString()+' ('+((players[bId][currentZoneId][leftBattleId]&&players[bId][currentZoneId][leftBattleId][i]&&Object.keys(players[bId][currentZoneId][leftBattleId][i]).length)||0)+')<br />'
+                    rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+' ('+((players[bId][currentZoneId][rightBattleId]&&players[bId][currentZoneId][rightBattleId][i]&&Object.keys(players[bId][currentZoneId][rightBattleId][i]).length)||0)+')<br />'
                 }
                 $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
                 1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
