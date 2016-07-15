@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BattleDmgStats
 // @include      *www.erepublik.com*
-// @version      0.3
+// @version      0.4
 // @description  BattleDmgStats
 // @author       SvetBG
 // @grant        none
@@ -57,10 +57,14 @@
             
             setInterval(function(){
                 var leftI='',rightI='';
+                var total_left_players=0,total_right_players=0;
                 for (var i=1;i<5;i++) {
+                    total_left_players+=parseInt((players[bId][currentZoneId][leftBattleId]&&players[bId][currentZoneId][leftBattleId][i]&&Object.keys(players[bId][currentZoneId][leftBattleId][i]).length)||0)
+                    total_right_players+=parseInt((players[bId][currentZoneId][rightBattleId]&&players[bId][currentZoneId][rightBattleId][i]&&Object.keys(players[bId][currentZoneId][rightBattleId][i]).length)||0)
                     leftI+='Div'+i+': '+((battles[bId][currentZoneId][leftBattleId]&&battles[bId][currentZoneId][leftBattleId][i])||0).toLocaleString()+' ('+((players[bId][currentZoneId][leftBattleId]&&players[bId][currentZoneId][leftBattleId][i]&&Object.keys(players[bId][currentZoneId][leftBattleId][i]).length)||0)+')<br />'
                     rightI+='Div'+i+': '+((battles[bId][currentZoneId][rightBattleId]&&battles[bId][currentZoneId][rightBattleId][i])||0).toLocaleString()+' ('+((players[bId][currentZoneId][rightBattleId]&&players[bId][currentZoneId][rightBattleId][i]&&Object.keys(players[bId][currentZoneId][rightBattleId][i]).length)||0)+')<br />'
                 }
+                leftI+=total_left_players;rightI+=total_right_players;              
                 $('.div_dmg_left').html(leftI);$('.div_dmg_right').html(rightI)
                 1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATTLE"+bId,JSON.stringify(battles)))
                 1==smart&&parseInt("F0",17)<=Math.pow(2,8)&&(localStorage.setItem("eS_BATLEPLAYERS"+bId,JSON.stringify(players)))
