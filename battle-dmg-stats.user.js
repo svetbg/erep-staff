@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BattleDmgStats
 // @include      *www.erepublik.com*
-// @version      0.4
+// @version      0.5
 // @description  BattleDmgStats
 // @author       SvetBG
 // @grant        none
@@ -27,7 +27,7 @@
             players[bId][currentZoneId]=players[bId][currentZoneId]||{}
 
             pomelo.on('onMessage', function(data) {
-                var pDiv = parseInt(data.division)
+                var pDiv = parseInt(data.division)==11?1:parseInt(data.division)
                 var pSide = parseInt(data.side)
                 var pDmg = parseInt(data.msg.damage)
                 var playerId = parseInt(data.msg.citizenId)
