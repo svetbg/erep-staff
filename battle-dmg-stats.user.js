@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BattleDmgStats
 // @include      *www.erepublik.com*
-// @version      0.5
+// @version      0.5.1
 // @description  BattleDmgStats
 // @author       SvetBG
 // @grant        none
@@ -51,9 +51,10 @@
                 console.log(data)
             })
 
-            var divDmgInfoCont=$('div#pvp')
-            divDmgInfoCont.after('<div class="div_dmg_left" style="width:150px;position:absolute;top:0px;z-index:350;left:-180px;color:black;"></div>')
-            divDmgInfoCont.after('<div class="div_dmg_right" style="width:150px;position:absolute;top:0px;right:-165px;z-index:350;color:black;"></div>')
+            var divDmgInfoCont=$('div#pvp').after('<div class="div_dmg_stats" style="width:100%;position:relative;top:0px;left:0px;z-index:350;color:black;"></div>')
+            divDmgInfoCont.after('<div class="div_dmg_right" style="float: right;"></div>')
+            divDmgInfoCont.after('<div class="div_dmg_left" style="float: left"></div>')
+            
             
             setInterval(function(){
                 var leftI='',rightI='';
