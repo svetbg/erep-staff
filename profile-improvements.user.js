@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.0.2
+// @version      0.0.1
 // @description  Profile Improvements
 // @author       SvetBG
 // @grant        none
@@ -21,6 +21,6 @@
         //Math.ceil(((strenght + (level * 5))*(1+(rank*0.05)))*weapon*naturalEnemy*booster)
         //console.log(strength + ' ' + level + ' ' + militaryRankWeight)
         var oneHit = Math.ceil(((strength + (level * 5))*(1+(militaryRankWeight*0.05)))*4)
-        spanStrengthContainer.after('<span class="vs164-2" style="bottom: 0;">'+(oneHit).toLocaleString(userLang, {minimumFractionDigits: 2})+'</span>')
+        spanStrengthContainer.after('<span class="vs164-2" style="bottom: 0;">'+(oneHit).toLocaleString(userLang, {minimumFractionDigits: 2})+' / hit</span>')
     });
 })();
