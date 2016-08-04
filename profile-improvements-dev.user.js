@@ -3,7 +3,7 @@
 // @include      *www.erevollution.com/*/profile/*
 // @version      0.0.1
 // @description  Profile Improvements
-// @author       SvetBG
+// @author       Svetlin Tsvetanov <svetbg@gmail.com>
 // @grant        none
 // ==/UserScript==
 
@@ -74,8 +74,8 @@ function style(t) {
         function getDmg(container)
         {
             var tpVal = container.html().split('/')
-            tpCurrent = parseFloat(tpVal[0].replace(',', ''))
-            tpAchievement = parseFloat(tpVal[1].replace(',', ''))
+            tpCurrent = parseFloat(tpVal[0].split(',').join(''))
+            tpAchievement = parseFloat(tpVal[1].split(',').join(''))
             
             return [tpCurrent, tpAchievement]
         }
