@@ -3,7 +3,7 @@
 // @include      *www.erevollution.com/*/profile/*
 // @version      0.0.1
 // @description  Profile Improvements
-// @author       SvetBG
+// @author       Anonymous
 // @grant        none
 // ==/UserScript==
 
