@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.0.3
+// @version      0.0.4
 // @description  Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -104,6 +104,6 @@ function style(t) {
             var currMedalCount = parseInt($(this).html())
             medalTotalCount+=currMedalCount
         })
-        $('div#tab-1 h3').eq(0).html('<span>'+$('div#tab-1 h3').eq(0).html()+' ('+medalTotalCount+')</span>')
+        medalCountCont.eq(0).parent().prev().prev().html('<span>'+medalCountCont.eq(0).parent().prev().prev()+' ('+medalTotalCount+')</span>')
     });
 })();
