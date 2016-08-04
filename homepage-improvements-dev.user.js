@@ -19,8 +19,8 @@ function style(t) {
     $( document ).ready(function() {
         var recoverableEnergy = 0
         
-        var checkEnergyInterval = setInterval(checkEnergy, 3e5)
-        checkEnergy()
+        var checkEnergyInterval = setInterval(checkEnergy, 6e4)
+        setTimeout(checkEnergy, 10e2)
         
         function checkEnergy() 
         {
