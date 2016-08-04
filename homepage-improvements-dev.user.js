@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HomePage Improvements
 // @include      *www.erevollution.com/*/index
-// @version      0.0.1
+// @version      0.0.2
 // @description  HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -24,12 +24,11 @@ function style(t) {
         checkEnergy()
         var checkEnergyInterval = setInterval(checkEnergy, 6e5)
         
-        
         function checkEnergy() 
         {
             if (currentEnergy < maxEnergy) {
                 getRecoverableEnergy()
-                if (recoverableEnergy > 10) {
+                if (recoverableEnergy > generateRandomNumber()) {
                     $('#energyButton').trigger('click')
                 }
             } else {
@@ -40,6 +39,11 @@ function style(t) {
         function getRecoverableEnergy()
         {
             recoverableEnergy = parseFloat($('strong#energyButtonT').html())
+        }
+        
+        function generateRandomNumber()
+        {
+            return Math.ceil(Math.random()*10)*10
         }
     });
 })();
