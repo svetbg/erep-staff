@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.0.2
+// @version      0.0.3
 // @description  Profile Improvements
 // @author       SvetBG
 // @grant        none
@@ -19,6 +19,7 @@ function style(t) {
     var ranks = ["Recruit","Junior Cadet","Cadet","Cadet Senior","Cadet 1st Class","Soldier","Private Basic","Private 2nd Class","Private","Private 1st Class","Specialist","Gunnery Specialist","Technical Specialist","Specialist 1st Class","Ranger","Lance Corporal","Corporal","Fireteam Leader","Sergeant 3rd Class","Sergeant 2nd Class","Sergeant","Sergeant 1st Class","Staff Sergeant","Gunnery Sergeant","Master Sergeant","First Sergeant","Command Sergeant","Master Gunnery Sergeant","Sergeant Major","Company Sergeant","Warrant Officer Candidate","Warrant Officer","Chief Warrant Officer","Chief Warrant Officer 1st Class","Master Warrant Officer","Quartermaster","Officer Cadet Junior","Officer Cadet Senior","Ensign","Second Lieutenant","First Lieutenant","Lieutenant Captain","Lieutenant","Lieutenant Colonel","Captain Lieutenant","Captain","Captain*","Captain**","Captain***","Colonel","Brigadier","Field Marshal","Commander","High Commander","Supreme Commander","Major General","Lieutenant General","General-Field Marshal","General","SF First Lieutenant","SF Sublieutenant","SF Lieutenant","SF Lieutenant-Colonel","SF Lieutenant-Captain","SF Captain","TSF Captain*","SF Captain**","SF Captain***","SF Colonel","Warface"]
     $( document ).ready(function() {
         var spanStrengthContainer = $('span.vs164-2')
+        var medalCountCont = $('div.vs163-1')
         var strength = parseFloat(spanStrengthContainer.html().replace(',', ''))
         var level = parseInt($('span.vs164-13').html())
         var militaryRank = $('span.vs164-6').html()
@@ -27,14 +28,12 @@ function style(t) {
         var weapon = parseFloat($('select#weapon').val())||1
         var dsystem = parseFloat($('select#dsystem').val())||0
         var booster = parseFloat($('select#booster').val())||1
-        //Math.ceil(((strenght + (level * 5))*(1+(rank*0.05)))*weapon*naturalEnemy*booster)
-        //console.log(strength + ' ' + level + ' ' + militaryRankWeight)
         var oneHit = 0
         var tpContainer = $('small.vs165-5 strong').eq(0)
         var allyContainer = $('small.vs165-5 strong').eq(1)
-        
         var tpRemainingHits = 0
         var allyRemainingHits = 0
+        var medalTotalCount = 0
         
         tpContainer.after('<strong id="tp_in" class="hits"></strong>')
         allyContainer.after('<strong id="ally_in" class="hits"></strong>')
@@ -100,5 +99,11 @@ function style(t) {
             booster = parseFloat($(this).val())
             calculate()
         })
+        
+        medalCountCont.each(function(){
+            var currMedalCount = parseInt($(this).html())
+            medalTotalCount+=currMedalCount
+        })
+        $('div#tab-1 h3').eq(0).html('<span>'+$('div#tab-1 h3').eq(0).html()+' ('+medalTotalCount+')</span>')
     });
 })();
