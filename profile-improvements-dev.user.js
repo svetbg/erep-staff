@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.1
+// @version      0.1.2
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -106,8 +106,8 @@ function style(t) {
             calculate()
         })
         
-        $('input#number-of-hits').on('change',function(){
-            numOfHits = parseInt($(this).val())
+        $('input#number-of-hits').on('keyup',function(){
+            numOfHits = parseInt($(this).val())||1
             calculate()
         })
         
