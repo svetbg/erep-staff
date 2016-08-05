@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.0.10
+// @version      0.1.1
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -58,13 +58,14 @@ function style(t) {
         {
             oneHit = Math.ceil(((strength + (level * 5))*(1+(militaryRankWeight*0.05)))*weapon*ne*booster)
             oneHit = oneHit-(oneHit*dsystem)
-            oneHit *= numOfHits
-            
+                        
             var tpRemaining = tpAchievement - tpCurrent
             tpRemainingHits = Math.ceil(tpRemaining/oneHit)
             
             var allyRemaining = allyAchievement - allyCurrent
             allyRemainingHits = Math.ceil(allyRemaining/oneHit)
+            
+            oneHit *= numOfHits
             
             updateHit()
         }
@@ -105,7 +106,7 @@ function style(t) {
             calculate()
         })
         
-        $('input#number-of-hits').on('blur',function(){
+        $('input#number-of-hits').on('change',function(){
             numOfHits = parseInt($(this).val())
             calculate()
         })
