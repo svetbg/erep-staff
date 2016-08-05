@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.0.7
+// @version      0.0.8
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -22,8 +22,9 @@ function style(t) {
         var medalCountCont = $('div.vs163-1')
         var strength = parseFloat(spanStrengthContainer.html().replace(',', ''))
         var level = parseInt($('span.vs164-13').html())
-        var militaryRank = $('span.vs164-6').html()
-        var militaryRankWeight = ranks.indexOf(militaryRank)+1
+        var militaryRankRe = /[\d]+/g
+        var militaryRank = $('img.vs164-5').attr('src')
+        var militaryRankWeight = militaryRankRe.exec(militaryRank)[0]
         var ne = $('input#ne:checked').length?1.1:1
         var weapon = parseFloat($('select#weapon').val())||1
         var dsystem = parseFloat($('select#dsystem').val())||0
