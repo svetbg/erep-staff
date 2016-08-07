@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.4
+// @version      0.1.5
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -82,7 +82,9 @@ function style(t) {
             $('span#oneHit').html((oneHit).toLocaleString(userLang, {minimumFractionDigits: 2}))
             $('strong#tp_in').html(space+'in ' + tpRemainingHits + ' hits')
             $('strong#ally_in').html(space+'in ' + allyRemainingHits + ' hits')
-            $('span#mr_in').html(space+'in ' + mrRemainingHits + ' hits')
+            var mrRemainingHitsThousands = Math.round(mrRemainingHits/1000)
+            mrRemainingHitsThousands = mrRemainingHitsThousands>1?mrRemainingHitsThousands+'k':mrRemainingHits
+            $('span#mr_in').html(space+'in ' + mrRemainingHitsThousands + ' hits')
         }
         
         function getDmg(container)
