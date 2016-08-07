@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.3
+// @version      0.1.4
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -35,15 +35,20 @@ function style(t) {
         var oneHit = 0
         var tpContainer = $('small.vs165-5 strong').eq(0)
         var allyContainer = $('small.vs165-5 strong').eq(1)
+        var mrContainer = $('span.vs164-10').eq(0)
         var tpRemainingHits = 0
         var allyRemainingHits = 0
+        var mrRemainingHits = 0
         var medalTotalCount = 0
+        var space = '&nbsp'
         
         tpContainer.after('<strong id="tp_in" class="hits"></strong>')
         allyContainer.after('<strong id="ally_in" class="hits"></strong>')
+        mrContainer.after('<span class="vs164-10" id="mr_in" class="hits"></span>')
         
         var tpInfo = getDmg(tpContainer)
         var allyInfo = getDmg(allyContainer)
+        var militaryRankInfo = getDmg(mrContainer)
         var tpCurrent = tpInfo[0]
         var tpAchievement = tpInfo[1]
         var allyCurrent = allyInfo[0]
@@ -65,6 +70,8 @@ function style(t) {
             var allyRemaining = allyAchievement - allyCurrent
             allyRemainingHits = Math.ceil(allyRemaining/oneHit)
             
+            mrRemainingHits = Math.ceil((militaryRankInfo[1]-militaryRankInfo[0])/oneHit)*10
+            
             oneHit *= numOfHits
             
             updateHit()
@@ -73,8 +80,9 @@ function style(t) {
         function updateHit()
         {
             $('span#oneHit').html((oneHit).toLocaleString(userLang, {minimumFractionDigits: 2}))
-            $('strong#tp_in').html(' in ' + tpRemainingHits + ' hits')
-            $('strong#ally_in').html(' in ' + allyRemainingHits + ' hits')
+            $('strong#tp_in').html(space+'in ' + tpRemainingHits + ' hits')
+            $('strong#ally_in').html(space+'in ' + allyRemainingHits + ' hits')
+            $('span#mr_in').html(space+'in ' + mrRemainingHits + ' hits')
         }
         
         function getDmg(container)
