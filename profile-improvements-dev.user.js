@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.5
+// @version      0.1.6
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -70,7 +70,14 @@ function style(t) {
             var allyRemaining = allyAchievement - allyCurrent
             allyRemainingHits = Math.ceil(allyRemaining/oneHit)
             
-            mrRemainingHits = Math.ceil((militaryRankInfo[1]-militaryRankInfo[0])/oneHit)*10
+            /*
+            console.log(oneHit)
+            console.log(militaryRankInfo[1])
+            console.log(militaryRankInfo[0])
+            console.log(militaryRankInfo[1]-militaryRankInfo[0])
+            console.log((militaryRankInfo[1]-militaryRankInfo[0])/oneHit)
+            */
+            mrRemainingHits = Math.ceil((militaryRankInfo[1]-militaryRankInfo[0])/(oneHit/10))
             
             oneHit *= numOfHits
             
