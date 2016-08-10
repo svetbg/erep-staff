@@ -21,7 +21,7 @@ function style(t) {
         var checkEnergyInterval = setInterval(checkEnergy, 6*6e4)
         setTimeout(checkEnergy, 10e2)
         
-        improveMenu(),improveReferralsPage()
+        improveMenu()
         
         function improveMenu()
         {
@@ -35,8 +35,15 @@ function style(t) {
             $('.nav-tabs a[href="' + location.hash + '"]').tab('show');
         }
         
-        function improveReferralsPage() {
-            if (location.hash.indexOf('#tab-2') < 0) {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            
+            improveReferralsPage(target)
+        })
+        
+        function improveReferralsPage(activeTab) 
+        {
+            if (activeTab != '#tab-2') {
                 return false
             }
             
