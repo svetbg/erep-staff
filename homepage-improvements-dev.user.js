@@ -19,7 +19,7 @@ function style(t) {
         var recoverableEnergy = 0
         
         var checkEnergyInterval = setInterval(checkEnergy, 6*6e4)
-        setTimeout(checkEnergy, 5e3)
+        setTimeout(checkEnergy, 3e3)
         
         improveMenu()
         
@@ -47,12 +47,12 @@ function style(t) {
                         getReferralsInfo()
                     })
                 }
+                
+                improveReferralsPage()
             }
             
-            improveReferralsPage(tabTarget)
+            
         })
-        
-        
         
         function getReferralsInfo()
         {
@@ -73,12 +73,8 @@ function style(t) {
             localStorage.setItem('erevRD',JSON.stringify(referralsDonated))
         }
         
-        function improveReferralsPage(activeTab) 
+        function improveReferralsPage() 
         {
-            if (activeTab != '#tab-2') {
-                return false
-            }
-            
             var infoTable = $('table.table')
             infoTable.find('thead > tr').append('<th class="text-center">Already Collected</th>')
             var playerTr = infoTable.find('tbody tr')
@@ -93,8 +89,6 @@ function style(t) {
                 var userId = getUserIdFromUrl(row.find('td:gt(0) > a').attr('href'))
                 row.append('<td class="text-center"><strong>'+(referralsDonated['donated'][userId]&&referralsDonated['donated'][userId].toLocaleString())+'</strong></td>')
             })
-            
-            localStorage.setItem('erevRD',JSON.stringify(referralsDonated))
         }
         
         function getUserIdFromUrl(url)
