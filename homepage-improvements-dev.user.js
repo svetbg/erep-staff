@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.0.6
+// @version      0.0.7
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -19,7 +19,7 @@ function style(t) {
         var recoverableEnergy = 0
         
         var checkEnergyInterval = setInterval(checkEnergy, 6*6e4)
-        setTimeout(checkEnergy, 10e2)
+        setTimeout(checkEnergy, 5e3)
         
         improveMenu()
         
@@ -35,11 +35,43 @@ function style(t) {
             $('.nav-tabs a[href="' + location.hash + '"]').tab('show');
         }
         
+        var tabTarget = '', collectRefGoldform
+        var referralsDonated = JSON.parse(localStorage.getItem('erevRD'))||{};
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var target = $(e.target).attr("href") // activated tab
+            tabTarget = $(e.target).attr("href") // activated tab
             
-            improveReferralsPage(target)
+            if (tabTarget == '#tab-2') {
+                collectRefGoldform = $('table.table').find('tbody tr').last().find('form')
+                if (collectRefGoldform.length > 0) {
+                    collectRefGoldform.submit(function(e){
+                        getReferralsInfo()
+                    })
+                }
+            }
+            
+            improveReferralsPage(tabTarget)
         })
+        
+        
+        
+        function getReferralsInfo()
+        {
+            var infoTable = $('table.table')
+            var playerTr = infoTable.find('tbody tr')
+            var userInfo = []
+            var len = playerTr.length
+            playerTr.each(function(idx, el){
+                if (idx == len-1 && collectRefGoldform.length > 0)
+                    return false
+
+                    var row = $(this)
+                    var userId = getUserIdFromUrl(row.find('td:gt(0) > a').attr('href'))
+                    referralsDonated['donated'][userId] = referralsDonated['donated'][userId]||0
+                    referralsDonated['donated'][userId] += parseFloat(row.find('td:eq(3) > strong').html())
+            })
+
+            localStorage.setItem('erevRD',JSON.stringify(referralsDonated))
+        }
         
         function improveReferralsPage(activeTab) 
         {
@@ -47,38 +79,19 @@ function style(t) {
                 return false
             }
             
-            var referralsDonated = JSON.parse(localStorage.getItem('erevRD'))||{};
-            referralsDonated['donated'] = referralsDonated['donated']||{}
-            
             var infoTable = $('table.table')
             infoTable.find('thead > tr').append('<th class="text-center">Already Collected</th>')
             var playerTr = infoTable.find('tbody tr')
-            var form = infoTable.find('tbody tr').last().find('form')
-            var userInfo = []
             var len = playerTr.length
             playerTr.each(function(idx, el){
-                if (idx == len-1 && form.length > 0)
+                var row = $(this)
+                if (idx == len-1 && collectRefGoldform.length > 0) {
+                    row.find('td:eq(0)').attr('colspan', 4)
                     return false
-                    
-                var row = $(this)
-                var userId = getUserIdFromUrl(row.find('td:gt(0) > a').attr('href'))
-                userInfo[userId] = parseFloat(row.find('td:eq(3) > strong').html())
-                referralsDonated['donated'][userId] = referralsDonated['donated'][userId]||0
-            })
-            
-            if (form.length > 0) {
-                for (var uId in userInfo) {
-                    if (userInfo.hasOwnProperty(uId)) {
-                        referralsDonated['donated'][uId] = referralsDonated['donated'][uId]||0
-                        referralsDonated['donated'][uId] += userInfo[uId]
-                    }
                 }
-            }
-            
-            playerTr.each(function(){
-                var row = $(this)
+                
                 var userId = getUserIdFromUrl(row.find('td:gt(0) > a').attr('href'))
-                row.append('<td class="text-center"><strong>'+referralsDonated['donated'][userId].toLocaleString()+'</strong></td>')
+                row.append('<td class="text-center"><strong>'+(referralsDonated['donated'][userId]&&referralsDonated['donated'][userId].toLocaleString())+'</strong></td>')
             })
             
             localStorage.setItem('erevRD',JSON.stringify(referralsDonated))
