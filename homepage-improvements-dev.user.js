@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.0.7
+// @version      0.0.8
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -40,7 +40,7 @@ function style(t) {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             tabTarget = $(e.target).attr("href") // activated tab
             
-            if (tabTarget == '#tab-2') {
+            if (tabTarget == '#tab-2' && location.pathname.indexOf('special-items') >= 0) {
                 collectRefGoldform = $('table.table').find('tbody tr').last().find('form')
                 if (collectRefGoldform.length > 0) {
                     collectRefGoldform.submit(function(e){
