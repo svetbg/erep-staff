@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Market Improvements
 // @include      *www.erevollution.com/*/market*
-// @version      0.0.3
+// @version      0.0.4
 // @description  Erev Market Improvements
 // @author       Anonymous
 // @grant        none
@@ -26,7 +26,8 @@ function style(t) {
     
     $( document ).ready(function() {
         parseUrl()
-        show('panel', urlParams['category'])
+        
+        urlParams['category']>0&&show('panel', urlParams['category'])
         if (urlParams['category'] == 4) {
             $('div.main-box-body tr:gt(0)').each(function(){
                 var priceTD = $(this).find('td.vs129')
