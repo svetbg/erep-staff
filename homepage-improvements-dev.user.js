@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.0.8
+// @version      0.0.9
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -13,12 +13,14 @@ function style(t) {
 
 (function() {
     'use strict';
-    style(".hits {color: #595959;}");
-    var userLang = navigator.language||navigator.userLanguage||'en-US'
+    style(".hits {color: #595959;}")
+    style(".dropdown:hover .dropdown-menu {display: block;}")
+    var userLang = navigator.language||navigator.userLanguage||'en-US',goldBonusDataTarget='#tab-2',specialItemsPath='special-items'
     $( document ).ready(function() {
         var recoverableEnergy = 0
+        var randomNumber = 6
         
-        var checkEnergyInterval = setInterval(checkEnergy, 6*6e4)
+        var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
         setTimeout(checkEnergy, 3e3)
         
         improveMenu()
@@ -40,7 +42,7 @@ function style(t) {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             tabTarget = $(e.target).attr("href") // activated tab
             
-            if (tabTarget == '#tab-2' && location.pathname.indexOf('special-items') >= 0) {
+            if (tabTarget == goldBonusDataTarget && location.pathname.indexOf(specialItemsPath) >= 0) {
                 collectRefGoldform = $('table.table').find('tbody tr').last().find('form')
                 if (collectRefGoldform.length > 0) {
                     collectRefGoldform.submit(function(e){
@@ -102,6 +104,7 @@ function style(t) {
         
         function checkEnergy() 
         {
+            console.log(new Date().toUTCString())
             var energyCont = $('div#energyBarT')
             if (energyCont === undefined)
                 return False
@@ -110,9 +113,10 @@ function style(t) {
             var maxEnergy = parseFloat(energyCont.html().split('/')[1])
             if (currentEnergy < maxEnergy) {
                 getRecoverableEnergy()
-                var random = generateRandomNumber()
+                var random = generateRandomNumber()*10
                 if (recoverableEnergy >= random) {
-                    $('#energyButton').trigger('click')
+                    console.log(randomNumber*randomNumber*1.13*1000)
+                    setTimeout(function(){$('#energyButton').trigger('click')}, randomNumber*randomNumber*1.13*1000)
                 }
             } else {
                 undefined!==checkEnergyInterval&&clearInterval(checkEnergyInterval)
@@ -126,7 +130,8 @@ function style(t) {
         
         function generateRandomNumber()
         {
-            return Math.ceil(Math.random()*10)*10
+            randomNumber = Math.ceil(Math.random()*10)
+            return randomNumber
         }
     });
 })();
