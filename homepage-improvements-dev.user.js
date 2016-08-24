@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.0.9
+// @version      0.0.10
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -24,6 +24,32 @@ function style(t) {
         setTimeout(checkEnergy, 3e3)
         
         improveMenu()
+        improveInventory()
+        
+        function parseUrl()
+        {
+            return location.pathname.split('/')
+        }
+        
+        function improveInventory()
+        {
+            var pathInfoArr = parseUrl()
+            if (pathInfoArr.indexOf('inventory') != (pathInfoArr.length-1))
+                return false
+                
+            var foodItems = $("img.vs112[src$='food.png']")
+            var totalNrj = 0
+            var foodQualityRegex = /star\-(\d)+$/i
+            foodItems.each(function(){
+                var spanValue = $(this).parent().next().next()
+                var qty = parseInt(spanValue.find('span.timer').text())
+                var foodQuality = parseInt(foodQualityRegex.exec(spanValue.find('i').attr('class'))[1])
+                totalNrj += (qty*foodQuality*2)
+                spanValue.prev().html(spanValue.prev().html()+' ('+(qty*foodQuality*2)+')')
+            })
+            
+            $('header').eq(2).find('h2').after('<h4>Energy: '+totalNrj+'</h4>')
+        }
         
         function improveMenu()
         {
