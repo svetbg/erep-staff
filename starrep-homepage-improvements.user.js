@@ -29,7 +29,7 @@ function style(t) {
         {
             var pathInfoArr = parseUrl()
             
-            if (pathInfoArr.indexOf('exploration') == -1)
+            if (pathInfoArr.length <= 2)
                 window.location = '/exploration/'
                 
             // Do verifications here
