@@ -91,8 +91,15 @@ function style(t) {
                 getRecoverableEnergy()
                 console.log(currentEnergy + ' ' + maxEnergy + ' ' + recoverableEnergy)
                 var random = generateRandomNumber()*10
+                
+                
                 if (recoverableEnergy >= random) {
                     console.log(randomNumber*randomNumber*1.13*1000)
+                    if (recoverableEnergy == 50) {
+                        setTimeout(function(){window.location.reload()}, randomNumber*randomNumber*1.13*1000)
+                        return false
+                    }
+                        
                     setTimeout(function(){$('span.restore-power').trigger('click')}, randomNumber*randomNumber*1.13*1000)
                 }
             } else {
