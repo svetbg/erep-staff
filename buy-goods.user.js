@@ -50,7 +50,8 @@
             $(r).each(function(e, r) {
                 //var itemsIterationTimeout = setTimeout(function() {
                     var e = parseFloat(r.priceWithTaxes);
-                    if (e > t) return console.log("Price is not good: " + e), !1;
+                    //if (e > t) return console.log("Price is not good: " + e), !1;
+                    if (e > t) return !1;
                     if (1 > n) return console.log("Qty is 0"), !1;
                     var a = n,
                         o = r.id,
