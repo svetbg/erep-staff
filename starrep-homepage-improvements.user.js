@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.1
+// @version      0.0.2
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -19,11 +19,30 @@ function style(t) {
     $( document ).ready(function() {
         var recoverableEnergy = 0
         var randomNumber = 6
+        var pathInfoArr = parseUrl()
         
-        var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
-        setTimeout(checkEnergy, 3e3)
+        if (pathInfoArr.length <= 2) {
+            var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
+            setTimeout(checkEnergy, 3e3)
+        }
         
-        //checkExploration()
+        var exploreTime = 0
+        $.cookie.raw = true;
+        if (!$.cookie("exploreTimeout")) {
+            checkExploration()
+        } else {
+            if (pathInfoArr.length <= 2) {
+                randomNumber = generateRandomNumber()
+                
+                //var refreshTimeToExplore = parseInt($.cookie("exploreTimeout"))/4 - randomNumber*60
+                
+                if (randomNumber < 3) randomNumber = 4
+                
+                setTimeout(function(){window.location.reload()}, randomNumber*6e4)
+            }
+        }
+        
+        var exploreTimeout = ''
         
         function checkExploration()
         {
@@ -31,10 +50,40 @@ function style(t) {
             
             if (pathInfoArr.length <= 2)
                 window.location = '/exploration/'
-                
-            // Do verifications here
-                
-            //setTimeout(function(){window.location='/'}, 10e3)
+            
+            setTimeout(function() {
+                getExploreTimeout()
+                if (exploreTimeout) {
+                    console.log('Exploration still cooling down: '+exploreTimeout)
+                    exploreTime = timeToSeconds(exploreTimeout)
+                    
+                    var date = new Date()
+                    //var m = 10;
+                    var newTime = date.getTime() + exploreTime*1000
+                    date.setTime(newTime)
+                    
+                    $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
+                    setTimeout(function(){window.location='/'}, 5e3)
+                } else {
+                    var exploreBtn = $('.explore-btn')
+                    if (exploreBtn) {
+                        var tokenImg = exploreBtn.find('img.credits-img')
+                        if (tokenImg.length) {
+                            console.log('Explore wants tokens?!')
+                            setTimeout(function(){window.location='/'}, 5e3)
+                        } else {
+                            console.log('Click should be triggered')
+                            setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},2e3)}, 5e3)
+                        }
+                    }
+                }
+            }, 2e3)
+        }
+        
+        function getExploreTimeout()
+        {
+            var exploreTimer = $('div.exploration > div.timer')
+            exploreTimeout = exploreTimer.html()
         }
         
         function parseUrl()
@@ -117,6 +166,12 @@ function style(t) {
         {
             randomNumber = Math.ceil(Math.random()*10)
             return randomNumber
+        }
+        
+        function timeToSeconds(time) {
+            time = time.split(/:/)
+            
+            return parseInt(time[0] * 3600 + time[1] * 60 + time[2]*1)
         }
     });
 })();
