@@ -53,15 +53,20 @@ function style(t) {
             
             setTimeout(function() {
                 getExploreTimeout()
+                $.cookie('exploreTimeout', null, { path: '/'});
+                var date = new Date();
+                var m = 30;
+                date.setTime(date.getTime() + (m * 60 * 1000));
                 if (exploreTimeout) {
                     console.log('Exploration still cooling down: '+exploreTimeout)
                     exploreTime = timeToSeconds(exploreTimeout)
                     
-                    var date = new Date()
+                    //var date = new Date()
+                    //console.log(date)
                     //var m = 10;
-                    var newTime = date.getTime() + exploreTime*1000
-                    date.setTime(newTime)
-                    
+                    //var newTime = date.getTime() + exploreTime*1000
+                    //date.setTime(newTime)
+                    //console.log(date)
                     $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
                     setTimeout(function(){window.location='/'}, 5e3)
                 } else {
@@ -73,6 +78,12 @@ function style(t) {
                             setTimeout(function(){window.location='/'}, 5e3)
                         } else {
                             console.log('Click should be triggered')
+                            //var date = new Date()
+                            //exploreTime = timeToSeconds('08:00:00')
+                            //var newTime = date.getTime() + exploreTime*1000
+                            //date.setTime(newTime)
+                            
+                            $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
                             setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},2e3)}, 5e3)
                         }
                     }
