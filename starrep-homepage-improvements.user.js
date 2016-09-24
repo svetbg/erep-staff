@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.2
+// @version      0.0.3
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -19,17 +19,20 @@ function style(t) {
     $( document ).ready(function() {
         var recoverableEnergy = 0
         var randomNumber = 6
+        var humanLikeClickTime = 2000  // microsecods
         var pathInfoArr = parseUrl()
+        
+        autoVisitPages()        
         
         if (pathInfoArr.length <= 2) {
             var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
-            setTimeout(checkEnergy, 3e3)
+            setTimeout(checkEnergy, humanLikeClickTime)
         }
         
         var exploreTime = 0
         $.cookie.raw = true;
         if (!$.cookie("exploreTimeout")) {
-            checkExploration()
+            setTimeout(checkExploration, humanLikeClickTime)
         } else {
             if (pathInfoArr.length <= 2) {
                 randomNumber = generateRandomNumber()
@@ -48,8 +51,10 @@ function style(t) {
         {
             var pathInfoArr = parseUrl()
             
-            if (pathInfoArr.length <= 2)
+            if (pathInfoArr.length <= 2) {
                 window.location = '/exploration/'
+                return false
+            }
             
             setTimeout(function() {
                 getExploreTimeout()
@@ -68,14 +73,14 @@ function style(t) {
                     //date.setTime(newTime)
                     //console.log(date)
                     $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                    setTimeout(function(){window.location='/'}, 5e3)
+                    setTimeout(function(){window.location='/'}, humanLikeClickTime)
                 } else {
                     var exploreBtn = $('.explore-btn')
                     if (exploreBtn) {
                         var tokenImg = exploreBtn.find('img.credits-img')
                         if (tokenImg.length) {
                             console.log('Explore wants tokens?!')
-                            setTimeout(function(){window.location='/'}, 5e3)
+                            setTimeout(function(){window.location='/'}, humanLikeClickTime)
                         } else {
                             console.log('Click should be triggered')
                             //var date = new Date()
@@ -84,11 +89,11 @@ function style(t) {
                             //date.setTime(newTime)
                             
                             $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                            setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},2e3)}, 5e3)
+                            setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},humanLikeClickTime)}, humanLikeClickTime)
                         }
                     }
                 }
-            }, 2e3)
+            }, humanLikeClickTime)
         }
         
         function getExploreTimeout()
@@ -183,6 +188,41 @@ function style(t) {
             time = time.split(/:/)
             
             return parseInt(time[0] * 3600 + time[1] * 60 + time[2]*1)
+        }
+        
+        function autoVisitPages()
+        {
+            var linkHrefs = getAllMenuLinks('.navbar')
+            var randomNumber = generateRandomNumber() 
+            if (pathInfoArr.length <= 2) {
+                $.cookie("autoPlay", 1, { path: '/'});
+                setTimeout(function(){window.location.href=linkHrefs[Math.floor(Math.random()*linkHrefs.length)]}, randomNumber * 6e4)
+            }
+
+            // return back
+            if (pathInfoArr.length > 2) {
+                if ($.cookie("autoPlay")) {
+                    $.cookie("autoPlay", null, { path: '/'});
+                    setTimeout(function(){window.location.href='/'}, randomNumber * 5e3)
+                }
+            }
+        }
+        
+        function getAllMenuLinks(menuContainerIdentificator)
+        {
+            var links = $(menuContainerIdentificator).find('a')
+            var hrefArr = []
+            if (links.length) {
+                links.each(function(){
+                    var href = $(this).attr('href')
+                    if (href.indexOf('http') != -1 || href.indexOf('#') != -1) {
+                        return
+                    }
+                    hrefArr.push(href)
+                })
+            }
+            
+            return hrefArr
         }
     });
 })();
