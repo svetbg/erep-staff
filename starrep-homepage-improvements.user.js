@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.3
+// @version      0.0.4
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -22,7 +22,7 @@ function style(t) {
         var humanLikeClickTime = 2000  // microsecods
         var pathInfoArr = parseUrl()
         
-        autoVisitPages()        
+        //autoVisitPages()        
         
         if (pathInfoArr.length <= 2) {
             var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
@@ -73,14 +73,14 @@ function style(t) {
                     //date.setTime(newTime)
                     //console.log(date)
                     $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                    setTimeout(function(){window.location='/'}, humanLikeClickTime)
+                    setTimeout(function(){window.location='/'}, 5e2)
                 } else {
                     var exploreBtn = $('.explore-btn')
                     if (exploreBtn) {
                         var tokenImg = exploreBtn.find('img.credits-img')
                         if (tokenImg.length) {
                             console.log('Explore wants tokens?!')
-                            setTimeout(function(){window.location='/'}, humanLikeClickTime)
+                            setTimeout(function(){window.location='/'}, 5e2)
                         } else {
                             console.log('Click should be triggered')
                             //var date = new Date()
@@ -89,7 +89,7 @@ function style(t) {
                             //date.setTime(newTime)
                             
                             $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                            setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},humanLikeClickTime)}, humanLikeClickTime)
+                            setTimeout(function(){exploreBtn.trigger('click');setTimeout(function(){window.location='/'},1e3)}, 5e2)
                         }
                     }
                 }
