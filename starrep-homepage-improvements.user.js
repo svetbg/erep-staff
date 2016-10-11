@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.4
+// @version      0.0.5
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -75,7 +75,8 @@ function style(t) {
                     $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
                     setTimeout(function(){window.location='/'}, 5e2)
                 } else {
-                    var exploreBtn = $('.explore-btn')
+                    var exploreBtn = $('div.explore div.explore-cell')
+                    console.log(exploreBtn)
                     if (exploreBtn) {
                         var tokenImg = exploreBtn.find('img.credits-img')
                         if (tokenImg.length) {
