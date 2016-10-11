@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.6
+// @version      0.1.7
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -17,7 +17,7 @@ function style(t) {
     style(".hits {line-height:44px;font-weight: bold;}");
     style(".hit-class{color: #595959;}")
     style(".small-number {width:70px;display:inline;}");
-    var userLang = navigator.language||navigator.userLanguage||'en-US'
+    var userLang = navigator.language||navigator.userLanguage||'en-US',space = '&nbsp'
     var ranks = ["Recruit","Junior Cadet","Cadet","Cadet Senior","Cadet 1st Class","Soldier","Private Basic","Private 2nd Class","Private","Private 1st Class","Specialist","Gunnery Specialist","Technical Specialist","Specialist 1st Class","Ranger","Lance Corporal","Corporal","Fireteam Leader","Sergeant 3rd Class","Sergeant 2nd Class","Sergeant","Sergeant 1st Class","Staff Sergeant","Gunnery Sergeant","Master Sergeant","First Sergeant","Command Sergeant","Master Gunnery Sergeant","Sergeant Major","Company Sergeant","Warrant Officer Candidate","Warrant Officer","Chief Warrant Officer","Chief Warrant Officer 1st Class","Master Warrant Officer","Quartermaster","Officer Cadet Junior","Officer Cadet Senior","Ensign","Second Lieutenant","First Lieutenant","Lieutenant Captain","Lieutenant","Lieutenant Colonel","Captain Lieutenant","Captain","Captain*","Captain**","Captain***","Colonel","Brigadier","Field Marshal","Commander","High Commander","Supreme Commander","Major General","Lieutenant General","General-Field Marshal","General","SF First Lieutenant","SF Sublieutenant","SF Lieutenant","SF Lieutenant-Colonel","SF Lieutenant-Captain","SF Captain","TSF Captain*","SF Captain**","SF Captain***","SF Colonel","Warface"]
     $( document ).ready(function() {
         var spanStrengthContainer = $('span.vs164-2')
@@ -40,7 +40,6 @@ function style(t) {
         var allyRemainingHits = 0
         var mrRemainingHits = 0
         var medalTotalCount = 0
-        var space = '&nbsp'
         
         tpContainer.after('<strong id="tp_in" class="hits"></strong>')
         allyContainer.after('<strong id="ally_in" class="hits"></strong>')
@@ -58,6 +57,11 @@ function style(t) {
         
         $('div.vs164-11').after('<h3 style="margin-top: 15px;clear: both;"><span>Calculator</span></h3><br /><div class="vs165 hits"><div id="oneHit" class="vs165-1"> NE: <input type="checkbox" id="ne" value="1.1"/> <select required="required" class="form-control" id="weapon"><option value="1.0">No weapon</option><option value="1.2">Q1 Weapon</option><option value="1.4">Q2 Weapon</option><option value="1.6">Q3 Weapon</option><option value="1.8">Q4 Weapon</option><option value="2.0">Q5 Weapon</option><option value="1.4">Q1 Tank</option><option value="1.8">Q2 Tank</option><option value="2.2">Q3 Tank</option><option value="2.6">Q4 Tank</option><option value="3.0">Q5 Tank</option><option value="2.0">Q1 Helicopter</option><option value="2.5">Q2 Helicopter</option><option value="3.0">Q3 Helicopter</option><option value="3.5">Q4 Helicopter</option><option value="4.0">Q5 Helicopter</option><option value="5.0">RPG</option></select> <select required="required" class="form-control" id="dsystem"><option value="0.0">No Defense</option><option value="0.05">Q1 Defense</option><option value="0.10">Q2 Defense</option><option value="0.15">Q3 Defense</option><option value="0.20">Q4 Defense</option><option value="0.25">Q5 Defense</option></select> <select required="required" class="form-control" id="booster"><option value="1.0">No booster</option><option value="1.1">Q1 Booster</option><option value="1.3">Q3 Booster</option><option value="1.5">Q5 Booster</option></select></div> <div class="vs165-3"><span id="oneHit" class="hit-class">'+(oneHit).toLocaleString(userLang, {minimumFractionDigits: 2})+'</span> / <input type="text" class="form-control small-number" name="number-of-hits" id="number-of-hits" value="'+numOfHits+'"/> hit(s)</div></div>')
         
+        if ($('div#user-profile > div > div.main-box > header > h2')) {
+            if ($('div#user-profile > div > div.main-box > header > h2').html().indexOf('svetbg') != -1) {
+                $('div#user-profile > div > div.main-box > header > h2').html($('div#user-profile > div > div.main-box > header > h2').html() + '™')
+            }
+        }
         
         function calculate()
         {
