@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.0.10
+// @version      0.0.11
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -28,7 +28,14 @@ function style(t) {
         
         function parseUrl()
         {
-            return location.pathname.split('/')
+            var arr = location.pathname.split('/')
+            var res = []
+            for (var i=0; i<arr.length; ++i) {
+                if (arr[i])
+                    res.push(arr[i])
+            }
+            
+            return res
         }
         
         function improveInventory()
@@ -131,6 +138,12 @@ function style(t) {
         function checkEnergy() 
         {
             console.log(new Date().toUTCString())
+            var pathInfoArr = parseUrl()
+            
+            // allow energy consuption only on the home page
+            if (pathInfoArr.length > 1 && pathInfoArr.indexOf('index') == -1)
+                return false
+                
             var energyCont = $('div#energyBarT')
             if (energyCont === undefined)
                 return False
@@ -139,12 +152,14 @@ function style(t) {
             var maxEnergy = parseFloat(energyCont.html().split('/')[1])
             if (currentEnergy < maxEnergy) {
                 getRecoverableEnergy()
+                console.log(currentEnergy + ' ' + maxEnergy + ' ' + recoverableEnergy)
                 var random = generateRandomNumber()*10
                 if (recoverableEnergy >= random) {
                     console.log(randomNumber*randomNumber*1.13*1000)
                     setTimeout(function(){$('#energyButton').trigger('click')}, randomNumber*randomNumber*1.13*1000)
                 }
             } else {
+                console.log('End: ' + new Date().toUTCString())
                 undefined!==checkEnergyInterval&&clearInterval(checkEnergyInterval)
             }
         }
