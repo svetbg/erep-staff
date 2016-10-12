@@ -25,7 +25,7 @@ function style(t) {
         //autoVisitPages()        
         
         if (pathInfoArr.length <= 2) {
-            var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e3)
+            var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
             setTimeout(checkEnergy, humanLikeClickTime)
         }
         
