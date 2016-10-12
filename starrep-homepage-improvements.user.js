@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.6
+// @version      0.0.7
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -25,7 +25,7 @@ function style(t) {
         //autoVisitPages()        
         
         if (pathInfoArr.length <= 2) {
-            var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
+            var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e3)
             setTimeout(checkEnergy, humanLikeClickTime)
         }
         
@@ -158,18 +158,19 @@ function style(t) {
                 console.log(currentEnergy + ' ' + maxEnergy + ' ' + recoverableEnergy)
                 var random = generateRandomNumber()*10
                 
-                if (recoverableEnergy % 8 !== 0) {
-                    console.log('Skipping...')
-                    return false
-                }                
-                
                 if (recoverableEnergy >= random) {
                     console.log(randomNumber*randomNumber*1.13*1000)
-                    if (recoverableEnergy == 50) {
+                    if (recoverableEnergy == 50 || recoverableEnergy == 500) {
+                        console.log('Refresh time :)')
                         setTimeout(function(){window.location.reload()}, randomNumber*randomNumber*1.13*1000)
                         return false
                     }
-                        
+
+                    if (recoverableEnergy % 8 !== 0 && recoverableEnergy < 100) {
+                        console.log('Skipping...')
+                        return false
+                    }
+
                     setTimeout(function(){$('span.restore-power').trigger('click')}, randomNumber*randomNumber*1.13*1000)
                 }
             } else {
