@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.5
+// @version      0.0.6
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -158,6 +158,10 @@ function style(t) {
                 console.log(currentEnergy + ' ' + maxEnergy + ' ' + recoverableEnergy)
                 var random = generateRandomNumber()*10
                 
+                if (recoverableEnergy % 8 !== 0) {
+                    console.log('Skipping...')
+                    return false
+                }                
                 
                 if (recoverableEnergy >= random) {
                     console.log(randomNumber*randomNumber*1.13*1000)
