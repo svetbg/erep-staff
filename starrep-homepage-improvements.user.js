@@ -72,7 +72,7 @@ function style(t) {
                     //date.setTime(newTime)
                     //console.log(date)
                     $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                    //setTimeout(function(){window.location='/'}, 5e2)
+                    setTimeout(function(){window.location='/'}, 5e2)
                 } else {
                     var exploreBtn = $('div.explore div.explore-cell')
                     if (exploreBtn) {
