@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Profile Improvements
 // @include      *www.erevollution.com/*/profile/*
-// @version      0.1.7
+// @version      0.1.8
 // @description  Erev Profile Improvements
 // @author       Anonymous
 // @grant        none
@@ -31,7 +31,7 @@ function style(t) {
         var weapon = parseFloat($('select#weapon').val())||1
         var dsystem = parseFloat($('select#dsystem').val())||0
         var booster = parseFloat($('select#booster').val())||1
-        var numOfHits = parseInt($('input#number-of-hits'))||5
+        var numOfHits = parseInt($('input#number-of-hits'))||10
         var oneHit = 0
         var tpContainer = $('small.vs165-5 strong').eq(0)
         var allyContainer = $('small.vs165-5 strong').eq(1)
