@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg2.tentlan.com*
-// @version      0.0.2
+// @version      0.0.1
 // @description  Overview Improvements
 // @author       Anonymous
 // @grant        none
@@ -52,20 +52,16 @@ function style(t) {
     {
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
         var resourceBuildings = ['CacaoPlantation', 'ObsidianMine', 'Quarry', 'CornFarm']
-        var delay = 0
         $(resourceBuildings).each(function(k, v){
-            var delayTimeout = setTimeout(function() {
-                var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                if (harvest == 1) {
-                    var area = $('area[data-building="'+v+'"]')
-                    area.trigger('click')
+            var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
+            if (harvest == 1) {
+                var area = $('area[data-building="'+v+'"]')
+                area.trigger('click')
 
-                    setTimeout(function(){
-                        harvestAction()
-                    }, sec)
-                }
-            }, delay+4*sec)
-            delay+=4*sec
+                setTimeout(function(){
+                    harvestAction()
+                }, sec)
+            }
         })
         
     }
@@ -82,7 +78,7 @@ function style(t) {
     $( document ).ready(function() {
         parseUrl()
         checkResourceBuildings(), checkNotifications()
-        setInterval(checkResourceBuildings, 20*sec)
+        //setInterval(checkResourceBuildings, 20*sec)
         //setInterval(checkNotifications, 60*sec)
     })
     
@@ -94,6 +90,7 @@ function style(t) {
     
     function naturalClick(node)
     {
+        console.log(node)
         //triggerMouseEvent (node, "mouseover");
         triggerMouseEvent (node, "mousedown");
         triggerMouseEvent (node, "click");
