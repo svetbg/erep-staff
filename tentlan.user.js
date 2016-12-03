@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
-// @include      *bg2.tentlan.com*
-// @version      0.0.2
+// @include      *bg2.tentlan.com/overview*
+// @version      0.0.3
 // @description  Overview Improvements
 // @author       Anonymous
 // @grant        none
@@ -16,7 +16,8 @@ function style(t) {
     style("select {display:table-cell;}");
     
     var urlParams = []
-    var sec = 1e3, notified = false
+    var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0
+    var wait = 3*sec
     function parseUrl()
     {
         var urlParts = location.pathname.split('/')
@@ -35,7 +36,7 @@ function style(t) {
         }
         
         setTimeout(function(){
-            var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="600"]:visible')
+            var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="'+workDuration[workChoice]+'"]:visible')
             if (startProgressBtn.length == 1) {
                 console.log('Try to start new production')
                 naturalClick(startProgressBtn[0])
@@ -51,17 +52,25 @@ function style(t) {
     function checkResourceBuildings()
     {
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
-        var resourceBuildings = ['CacaoPlantation', 'ObsidianMine', 'Quarry', 'CornFarm']
+        var resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
+        var delay=0
+        console.log(new Date().toUTCString())
         $(resourceBuildings).each(function(k, v){
-            var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-            if (harvest == 1) {
-                var area = $('area[data-building="'+v+'"]')
-                area.trigger('click')
+            
+            setTimeout(function(){
+                
+                var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
+                if (harvest == 1) {
+                    console.log(new Date().toUTCString())
+                    var area = $('area[data-building="'+v+'"]')
+                    area.trigger('click')
 
-                setTimeout(function(){
-                    harvestAction()
-                }, sec)
-            }
+                    setTimeout(function(){
+                        harvestAction()
+                    }, sec)
+                }
+            }, delay+wait)
+            delay+=wait
         })
         
     }
@@ -78,7 +87,7 @@ function style(t) {
     $( document ).ready(function() {
         parseUrl()
         checkResourceBuildings(), checkNotifications()
-        //setInterval(checkResourceBuildings, 20*sec)
+        setInterval(checkResourceBuildings, 30*sec)
         //setInterval(checkNotifications, 60*sec)
     })
     
