@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      0.0.9
+// @version      1.0.0
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -160,13 +160,14 @@ function style(t) {
                         setTimeout(function(){window.location.reload()}, randomNumber*randomNumber*1.13*1000)
                         return false
                     }
-
-                    if (recoverableEnergy % 8 !== 0 && recoverableEnergy < 100) {
+/*
+                    if (recoverableEnergy % 8 !== 0 && recoverableEnergy < 150) {
                         console.log('Skipping...')
                         return false
                     }
-
+*/
                     setTimeout(function(){$('span.restore-power').trigger('click')}, randomNumber*randomNumber*1.13*1000)
+                    setTimeout(function(){window.location.reload()}, randomNumber*randomNumber*1.13*1000+500)
                 }
             } else {
                 console.log('End: ' + new Date().toUTCString())
@@ -176,7 +177,7 @@ function style(t) {
         
         function getRecoverableEnergy()
         {
-            recoverableEnergy = parseFloat($('span#power-to-restore').text())
+            recoverableEnergy = parseFloat($('span.restore-power span.power-to-restore').text())
         }
         
         function generateRandomNumber()
