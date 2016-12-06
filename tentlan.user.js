@@ -53,7 +53,7 @@ function style(t) {
         setTimeout(function(){
             console.log('Closing modal.')
             dialog.find('.wclose').trigger('click')
-        }, 2*sec)
+        }, 1.5*sec)
     }
     
     function checkForOpenDialog()
