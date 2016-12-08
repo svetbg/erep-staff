@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg2.tentlan.com/overview*
-// @version      1.0.0
+// @version      1.0.1
 // @description  Overview Improvements
 // @author       Anonymous
 // @grant       GM_xmlhttpRequest
@@ -15,7 +15,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL='YOUR_EMAIL@EXAMPLE.COM'
+    var USER_EMAIL='[put here your email]'
     var urlParams = []
     var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0, today=new Date(),attackTimeThreshold = 30*60
     var wait = 4.5*sec,notificationCount=0
@@ -118,7 +118,7 @@ function style(t) {
         var activity = $('div.menuIconImg.activity')
         if (activity.css('opacity') < 1) {
             
-            if (!activityOpened) {
+            if (!activityOpened && $('body > div.popover div.titleBarControlContainer.windowCloseButton').length == 0) {
                 activity.parent().parent().trigger('click')
                 activityOpened = true
             }
@@ -163,7 +163,7 @@ function style(t) {
                     }
                 }
             }, 500)
-            attackSnd.play()
+            //attackSnd.play()
         }
     }
     
@@ -177,7 +177,6 @@ function style(t) {
     function checkAttackTime(time)
     {
         var timeInSeconds = timeToSeconds(time)
-        
         if (timeInSeconds < attackTimeThreshold) {
             return true
         }
