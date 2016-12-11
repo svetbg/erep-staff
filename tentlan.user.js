@@ -15,7 +15,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL='[put here your email]'
+    var USER_EMAIL=''
     var urlParams = []
     var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0, today=new Date(),attackTimeThreshold = 30*60
     var wait = 4.5*sec,notificationCount=0
@@ -32,7 +32,9 @@ function style(t) {
         urlParams['quality'] = urlParts[urlParts.length-2]
     }
     
-    function harvestAction()
+    var harvestState = []
+    var resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
+    function harvestAction(building)
     {
         var dialog = $('#dialogContainer')
         var harvestBtn = dialog.find('button.resProductionProgressCollectButton:visible')
@@ -41,18 +43,23 @@ function style(t) {
         if (harvestBtn.length) {
             console.log('Try to harvest production')
             naturalClick(harvestBtn[0])
-        
-            setTimeout(function(){
-                var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="'+workDuration[workChoice]+'"]:visible')
-                if (startProgressBtn.length == 1) {
-                    console.log('Try to start new production')
-                    naturalClick(startProgressBtn[0])
-                }
-            }, sec)
+            harvestState[building] = 1
         }
         
         setTimeout(function(){
+            var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="'+workDuration[workChoice]+'"]:visible')
+            if (startProgressBtn.length == 1) {
+                console.log('Try to start new production')
+                naturalClick(startProgressBtn[0])
+            }
+            harvestState[building] = 2
+        }, sec)
+        
+        setTimeout(function(){
             console.log('Closing modal.')
+            if (harvestState[building] == 2) {
+                harvestState[building] = 0
+            }
             dialog.find('.wclose').trigger('click')
         }, 2*sec)
     }
@@ -71,20 +78,19 @@ function style(t) {
             return false
         }
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
-        var resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
         var delay=0
         console.log(new Date().toUTCString()+' Check for harvesting started')
         $(resourceBuildings).each(function(k, v){
             setTimeout(function(){
                 console.log(new Date().toUTCString()+' Trying to harvest '+v)
                 var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                if (harvest == 1) {
+                if (harvest == 1 || harvestState[v] != 0) {
                     console.log(new Date().toUTCString())
                     var area = $('area[data-building="'+v+'"]')
                     area.trigger('click')
 
                     setTimeout(function(){
-                        harvestAction()
+                        harvestAction(v)
                     }, sec)
                 }
             }, delay)
@@ -187,7 +193,8 @@ function style(t) {
     $( document ).ready(function() {
         
         parseUrl()
-        checkResourceBuildings(),checkNotifications(),checkForAttack()
+        checkResourceBuildings()
+        checkNotifications(),checkForAttack()
         setInterval(checkResourceBuildings, 30*sec)
         setInterval(checkNotifications, 60*sec)
         setInterval(checkForAttack, 5*sec)
