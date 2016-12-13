@@ -71,8 +71,10 @@ function style(t) {
         return dialog.html()
     }
     
-    function checkResourceBuildings()
+    function checkResourceBuildings(fullCheck)
     {
+        var fullCheck = (typeof fullCheck !== 'undefined') ?  fullCheck : false
+        
         if (checkForOpenDialog()) {
             console.log('There is an open dialog window, stop resource collection!')
             return false
@@ -84,7 +86,9 @@ function style(t) {
             setTimeout(function(){
                 console.log(new Date().toUTCString()+' Trying to harvest '+v)
                 var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                if (harvest == 1 || harvestState[v] != 0) {
+                console.log(new Date().toUTCString()+' ====== harvest '+harvest)
+                console.log(new Date().toUTCString()+' ====== harvest state '+harvestState[v])
+                if (harvest == 1 || harvestState[v] != 0 || fullCheck) {
                     console.log(new Date().toUTCString())
                     var area = $('area[data-building="'+v+'"]')
                     area.trigger('click')
@@ -114,6 +118,20 @@ function style(t) {
         } else {
             console.log(new Date().toUTCString()+' Setting notificationCount to 0.')
             notificationCount = 0
+        }
+    }
+    
+    function checkproductionColoIconsContainer()
+    {
+        if (checkForOpenDialog()) {
+            console.log('There is an open dialog window, stop resource collection!')
+            return false
+        }
+        
+        var prodColoCont = $('div#productionColoIconsContainer > div.productionColoIcon:visible')
+        if (prodColoCont.length) {
+            prodColoCont.trigger('click')
+            setTimeout(function() {checkResourceBuildings(true)}, sec)
         }
     }
     
@@ -194,10 +212,12 @@ function style(t) {
         
         parseUrl()
         checkResourceBuildings()
+        checkproductionColoIconsContainer()
         checkNotifications(),checkForAttack()
         setInterval(checkResourceBuildings, 30*sec)
         setInterval(checkNotifications, 60*sec)
         setInterval(checkForAttack, 5*sec)
+        setInterval(checkproductionColoIconsContainer, 20*sec)
     })
     
     function triggerMouseEvent (node, eventType) {
@@ -208,10 +228,15 @@ function style(t) {
     
     function naturalClick(node)
     {
+        console.log(node)
         triggerMouseEvent (node, "mouseover");
+        console.log('mouseover')
         triggerMouseEvent (node, "mousedown");
+        console.log('mousedown')
         triggerMouseEvent (node, "click");
+        console.log('click')
         triggerMouseEvent (node, "mouseup");
+        console.log('mouseup')
         
     }
 })()
