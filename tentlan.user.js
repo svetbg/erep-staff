@@ -34,35 +34,61 @@ function style(t) {
     
     var harvestState = []
     var resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
+    var resourceHarvestInProcess = false
     function harvestAction(building)
     {
         var dialog = $('#dialogContainer')
         var harvestBtn = dialog.find('button.resProductionProgressCollectButton:visible')
-        console.log('Ready for collection: ' + harvestBtn.length + '?')
+        print('Ready for collection: ' + harvestBtn.length + '?')
         
+        var closeWindow = 2
+        var startProductionDelay = 1
         if (harvestBtn.length) {
-            console.log('Try to harvest production')
+            print('Try to harvest production')
             naturalClick(harvestBtn[0])
             harvestState[building] = 1
+            setTimeout(function(){
+                startProduction(building, dialog)
+            }, startProductionDelay*sec)
+            
+        } else {
+            startProduction(building, dialog)
         }
         
-        setTimeout(function(){
-            var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="'+workDuration[workChoice]+'"]:visible')
-            if (startProgressBtn.length == 1) {
-                console.log('Try to start new production')
-                naturalClick(startProgressBtn[0])
-            }
-            harvestState[building] = 2
-        }, sec)
+        print('Close window in: '+closeWindow+' seconds.')
         
         setTimeout(function(){
-            console.log('Closing modal.')
+            print('Closing modal.')
             if (harvestState[building] == 2) {
                 harvestState[building] = 0
             }
+            if (building == resourceBuildings[resourceBuildings.length-1]) {
+                resourceHarvestInProcess = false
+                print('Stopping the harvest process.')
+            }
             dialog.find('.wclose').trigger('click')
-        }, 2*sec)
+        }, closeWindow*sec)
     }
+    
+    function startProduction(building, dialog)
+    {
+        print('Try to start new production')
+        var startProgressBtn = dialog.find('button.resProductionSelectButton[data-originalduration="'+workDuration[workChoice]+'"]:visible')
+        harvestState[building] = 2
+        if (startProgressBtn.length == 1) {
+            naturalClick(startProgressBtn[0])
+            
+            return 1
+        }
+        
+        return 0.5
+    }
+    
+    function print(msg)
+    {
+        console.log(new Date().toUTCString()+' '+msg)
+    }
+    
     
     function checkForOpenDialog()
     {
@@ -71,36 +97,39 @@ function style(t) {
         return dialog.html()
     }
     
+    
     function checkResourceBuildings(fullCheck)
     {
         var fullCheck = (typeof fullCheck !== 'undefined') ?  fullCheck : false
         
-        if (checkForOpenDialog()) {
-            console.log('There is an open dialog window, stop resource collection!')
-            return false
-        }
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
         var delay=0
-        console.log(new Date().toUTCString()+' Check for harvesting started')
+        print(' Check for harvesting started')
+        resourceHarvestInProcess = true
         $(resourceBuildings).each(function(k, v){
             setTimeout(function(){
-                console.log(new Date().toUTCString()+' Trying to harvest '+v)
+                print(resourceHarvestInProcess)
+                print(' Trying to harvest '+v)
                 var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                console.log(new Date().toUTCString()+' ====== harvest '+harvest)
-                console.log(new Date().toUTCString()+' ====== harvest state '+harvestState[v])
+                print(' ====== harvest '+harvest)
+                print(' ====== harvest state '+harvestState[v])
                 if (harvest == 1 || harvestState[v] != 0 || fullCheck) {
-                    console.log(new Date().toUTCString())
+                    
+                    print('')
                     var area = $('area[data-building="'+v+'"]')
                     area.trigger('click')
 
                     setTimeout(function(){
                         harvestAction(v)
                     }, sec)
+                } else if (v == resourceBuildings[resourceBuildings.length-1]) {
+                    resourceHarvestInProcess = false
+                    print(' Stopping the harvest process.')
                 }
             }, delay)
             delay+=wait
         })
-        console.log(new Date().toUTCString()+' Harvesting ended')
+        print(' Harvesting ended')
     }
     
     function checkNotifications()
@@ -109,14 +138,14 @@ function style(t) {
         
         if (notifications.length > 0) {
             var currentNoticationCount = parseInt(notifications[0].innerText)
-            console.log(new Date().toUTCString()+' Checking notifications: '+(currentNoticationCount-notificationCount))
+            print(' Checking notifications: '+(currentNoticationCount-notificationCount))
 
             if (currentNoticationCount > notificationCount) {
                 snd.play()
                 notificationCount+=currentNoticationCount
             }
         } else {
-            console.log(new Date().toUTCString()+' Setting notificationCount to 0.')
+            print(' Setting notificationCount to 0.')
             notificationCount = 0
         }
     }
@@ -124,7 +153,12 @@ function style(t) {
     function checkproductionColoIconsContainer()
     {
         if (checkForOpenDialog()) {
-            console.log('There is an open dialog window, stop resource collection!')
+            print('There is an open dialog window, stop resource collection!')
+            return false
+        }
+        
+        if (resourceHarvestInProcess) {
+            print('Harvesting in process, skip...')
             return false
         }
         
@@ -214,7 +248,14 @@ function style(t) {
         checkResourceBuildings()
         checkproductionColoIconsContainer()
         checkNotifications(),checkForAttack()
-        setInterval(checkResourceBuildings, 30*sec)
+        setInterval(function(){
+            if (checkForOpenDialog()) {
+                print('There is an open dialog window, stop resource collection!')
+                return false
+            }
+            resourceHarvestInProcess=true
+            checkResourceBuildings()
+        }, 30*sec)
         setInterval(checkNotifications, 60*sec)
         setInterval(checkForAttack, 5*sec)
         setInterval(checkproductionColoIconsContainer, 20*sec)
