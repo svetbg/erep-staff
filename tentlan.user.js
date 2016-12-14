@@ -105,16 +105,31 @@ function style(t) {
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
         var delay=0
         print(' Check for harvesting started')
+        var bildingsForHarvest = $('div.productionDoneIcon:visible').parent()
+        var rdyResourceBuildings = []
+        $(bildingsForHarvest).each(function(k1, v1){
+            rdyResourceBuildings.push($(v1).attr('data-building'))
+        })
+        
+        if (!fullCheck) {
+            resourceBuildings = rdyResourceBuildings
+        }
+        
+        if (!resourceBuildings.length) {
+            resourceHarvestInProcess=false
+            print('Harvesting ended (quick)')
+            return false
+        }
+        
         resourceHarvestInProcess = true
         $(resourceBuildings).each(function(k, v){
             setTimeout(function(){
                 print(resourceHarvestInProcess)
-                print(' Trying to harvest '+v)
+                print('Trying to harvest '+v)
                 var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                print(' ====== harvest '+harvest)
-                print(' ====== harvest state '+harvestState[v])
+                print('====== harvest '+harvest)
+                print('====== harvest state '+harvestState[v])
                 if (harvest == 1 || harvestState[v] != 0 || fullCheck) {
-                    
                     print('')
                     var area = $('area[data-building="'+v+'"]')
                     area.trigger('click')
@@ -122,14 +137,14 @@ function style(t) {
                     setTimeout(function(){
                         harvestAction(v)
                     }, sec)
-                } else if (v == resourceBuildings[resourceBuildings.length-1]) {
+                } else if (v == resourceBuildings[resourceBuildings.length-1]) {  // @TODO: this else if is not correct
                     resourceHarvestInProcess = false
-                    print(' Stopping the harvest process.')
+                    print('Stopping the harvest process.')
+                    print('Harvesting ended')
                 }
             }, delay)
             delay+=wait
         })
-        print(' Harvesting ended')
     }
     
     function checkNotifications()
@@ -165,7 +180,10 @@ function style(t) {
         var prodColoCont = $('div#productionColoIconsContainer > div.productionColoIcon:visible')
         if (prodColoCont.length) {
             prodColoCont.trigger('click')
+            // @TODO: the following functions is not triggered...
             setTimeout(function() {checkResourceBuildings(true)}, sec)
+        } else {
+            print('No resources rdy in other cities!')
         }
     }
     
