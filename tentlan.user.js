@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg2.tentlan.com/overview*
-// @version      1.0.1
+// @version      1.0.2
 // @description  Overview Improvements
 // @author       Anonymous
 // @grant        GM_xmlhttpRequest
@@ -16,8 +16,8 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL='svetbg@gmail.com'
-    var urlParams = []
+    var USER_EMAIL=''
+    var urlParams = [],cityId=0
     var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0, today=new Date(),attackTimeThreshold = 30*60
     var wait = 4.5*sec,notificationCount=0,resourceBldsInterval=false
     
@@ -109,18 +109,36 @@ function style(t) {
         return rdyResourceBuildings
     }
     
-    function checkResourceBuildings(fullCheck)
+    var fullCheck = []
+    function isFullCheck(cityId)
     {
-        var fullCheck = (typeof fullCheck !== 'undefined') ?  fullCheck : false
-        resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
+        var now = new Date().getTime()
+        if (fullCheck[cityId] == undefined) {
+            fullCheck[cityId] = now
+        }
         
-        print('fullCheck: '+fullCheck)
+        var diff = (now - fullCheck[cityId])
+        print('cityId: '+cityId+', diff: '+diff)
+        if ( (now - fullCheck[cityId]) > 5*60*sec ) {
+            fullCheck[cityId] = now
+            return true
+        }
+        
+        return false
+    }
+    
+    function checkResourceBuildings()
+    {
+        cityId=parseInt($('#citySelectorValue').val())
+        var forFullCheck = isFullCheck(cityId)
+        
+        resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
         
         // Quarry, CornFarm, CacaoPlantation, ObsidianMine
         var delay=0
-        print(' Check for harvesting started')
+        print(' Check for harvesting started, fullCheck: '+forFullCheck)
         
-        if (!fullCheck) {
+        if (!forFullCheck) {
             resourceBuildings = getRdyForCollectBlds()
         }
         
@@ -138,9 +156,9 @@ function style(t) {
                 var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
                 print('====== harvest '+harvest)
                 print('====== harvest state '+harvestState[v])
-                if (harvest == 1 || harvestState[v] != 0 || fullCheck) {
-                    print('')
+                if (harvest == 1 || harvestState[v] != 0 || forFullCheck) {
                     var area = $('area[data-building="'+v+'"]')
+                    console.log(area)
                     area.trigger('click')
 
                     setTimeout(function(){
@@ -191,7 +209,7 @@ function style(t) {
             print('Clearing interval resourceBldsInterval')
             clearInterval(resourceBldsInterval)
             prodColoCont.trigger('click')
-            setTimeout(function() {checkResourceBuildings(true)}, sec)
+            setTimeout(function() {checkResourceBuildings()}, sec)
             print('Starting resourceBldsInterval')
             resourceBldsInterval = setInterval(function(){
                 if (checkForOpenDialog()) {
@@ -279,7 +297,7 @@ function style(t) {
         return false
     }
     
-    $( document ).ready(function() {        
+    $( document ).ready(function() {
         parseUrl()
         checkResourceBuildings()
         checkproductionColoIconsContainer()
