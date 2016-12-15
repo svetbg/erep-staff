@@ -4,7 +4,8 @@
 // @version      1.0.1
 // @description  Overview Improvements
 // @author       Anonymous
-// @grant       GM_xmlhttpRequest
+// @grant        GM_xmlhttpRequest
+// @connect      www.fiong.com
 // ==/UserScript==
 
 function style(t) {
@@ -280,6 +281,18 @@ function style(t) {
     
     $( document ).ready(function() {
         
+        GM_xmlhttpRequest({
+                                    method: "POST",
+                                    url: "http://www.fiong.com/sendMail.php",
+                                    data: "email="+USER_EMAIL+"&subject=Tentlan ATTACK - "+123+"&body="+123,
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    onload: function(response) {
+
+                                    }
+                                });
+        
         parseUrl()
         checkResourceBuildings()
         checkproductionColoIconsContainer()
@@ -305,15 +318,10 @@ function style(t) {
     
     function naturalClick(node)
     {
-        console.log(node)
         triggerMouseEvent (node, "mouseover");
-        console.log('mouseover')
         triggerMouseEvent (node, "mousedown");
-        console.log('mousedown')
         triggerMouseEvent (node, "click");
-        console.log('click')
         triggerMouseEvent (node, "mouseup");
-        console.log('mouseup')
         
     }
 })()
