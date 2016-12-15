@@ -279,20 +279,7 @@ function style(t) {
         return false
     }
     
-    $( document ).ready(function() {
-        
-        GM_xmlhttpRequest({
-                                    method: "POST",
-                                    url: "http://www.fiong.com/sendMail.php",
-                                    data: "email="+USER_EMAIL+"&subject=Tentlan ATTACK - "+123+"&body="+123,
-                                    headers: {
-                                        "Content-Type": "application/x-www-form-urlencoded"
-                                    },
-                                    onload: function(response) {
-
-                                    }
-                                });
-        
+    $( document ).ready(function() {        
         parseUrl()
         checkResourceBuildings()
         checkproductionColoIconsContainer()
