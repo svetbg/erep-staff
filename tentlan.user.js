@@ -29,8 +29,8 @@ function style(t) {
     function parseUrl()
     {
         var urlParts = location.pathname.split('/')
-        urlParams['category'] = urlParts[urlParts.length-3]
-        urlParams['quality'] = urlParts[urlParts.length-2]
+        print('urlParts')
+        console.log(urlParts)
     }
     
     var harvestState = []
@@ -90,7 +90,6 @@ function style(t) {
         console.log(new Date().toUTCString()+' '+msg)
     }
     
-    
     function checkForOpenDialog()
     {
         var dialog = $('div#dialogContainer')
@@ -113,13 +112,16 @@ function style(t) {
     function isFullCheck(cityId)
     {
         var now = new Date().getTime()
+        var randomNumber = generateRandomNumber()
+        print('randomNumber: '+randomNumber)
+        
         if (fullCheck[cityId] == undefined) {
             fullCheck[cityId] = now
         }
         
         var diff = (now - fullCheck[cityId])
         print('cityId: '+cityId+', diff: '+diff)
-        if ( (now - fullCheck[cityId]) > 5*60*sec ) {
+        if ( (now - fullCheck[cityId]) > (randomNumber/2)*60*sec ) {
             fullCheck[cityId] = now
             return true
         }
@@ -328,5 +330,11 @@ function style(t) {
         triggerMouseEvent (node, "click");
         triggerMouseEvent (node, "mouseup");
         
+    }
+    
+    function generateRandomNumber()
+    {
+        var randomNumber = Math.ceil(Math.random()*10)
+        return randomNumber
     }
 })()
