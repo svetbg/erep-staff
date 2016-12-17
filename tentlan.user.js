@@ -30,8 +30,8 @@ function style(t) {
     function parseUrl()
     {
         var urlParts = location.pathname.split('/')
-        print('urlParts')
-        console.log(urlParts)
+        
+        return urlParts
     }
     
     function print(msg, color, background, bold)
@@ -43,11 +43,18 @@ function style(t) {
         console.log(new Date().toUTCString()+' %c'+msg, 'background: '+background+'; color: '+color+'; font-weight: '+bold)
     }
     
-    function checkForOpenDialog()
+    function allowResourceCheck()
     {
+        var urlParts = parseUrl()
+        console.log(urlParts)
+        console.log(urlParts.indexOf('overview'))
+        if (urlParts.indexOf('overview') == -1) {
+            return false
+        }
+        
         var dialog = $('div#dialogContainer')
         
-        return dialog.html()
+        return !dialog.html()
     }
     
     function getRdyForCollectBlds()
@@ -65,7 +72,7 @@ function style(t) {
     function isFullCheck(cityId)
     {
         var now = new Date().getTime()
-        var randomNumber = generateRandomNumber(3,6)
+        var randomNumber = generateRandomNumber(5,7)
         print('randomNumber: '+randomNumber)
         
         if (fullCheck[cityId] == undefined) {
@@ -96,7 +103,7 @@ function style(t) {
             }
             
             dfd.resolve()
-        }, 0.5*sec)
+        }, 0.1*sec)
         
         return dfd.promise()
     }
@@ -151,13 +158,20 @@ function style(t) {
         var forFullCheck = isFullCheck(cityId)
         
         resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
+        var onlyForHarvestBlds = getRdyForCollectBlds()
         
         var delay=0
         print(' Check for harvesting started, fullCheck: '+forFullCheck, 'yellow', bkg, 'bold')
         
-        if (!forFullCheck) {
-            resourceBuildings = getRdyForCollectBlds()
+        if (forFullCheck) {
+            $(resourceBuildings).each(function(k, v){
+                if (onlyForHarvestBlds.indexOf(v) == -1) {
+                    onlyForHarvestBlds.push(v)
+                }
+            })
         }
+        
+        resourceBuildings = onlyForHarvestBlds
         
         if (!resourceBuildings.length) {
             resourceHarvestInProcess=false
@@ -211,11 +225,6 @@ function style(t) {
     
     function checkproductionColoIconsContainer()
     {
-        if (checkForOpenDialog()) {
-            print('There is an open dialog window, stop resource collection!', 'red', bkg, 'bold')
-            return false
-        }
-        
         if (resourceHarvestInProcess) {
             print('Harvesting in process, skip...', 'red', bkg, 'bold')
             return false
@@ -229,7 +238,7 @@ function style(t) {
             setTimeout(function() {checkResourceBuildings()}, sec)
             print('Starting resourceBldsInterval')
             resourceBldsInterval = setInterval(function(){
-                if (checkForOpenDialog()) {
+                if (!allowResourceCheck()) {
                     print('There is an open dialog window, stop resource collection!', 'red', bkg, 'bold')
                     return false
                 }
@@ -282,7 +291,7 @@ function style(t) {
                                     }
                                 });
                             }
-                            //attackSnd.play()
+                            attackSnd.play()
                             return
                         }
                     })
@@ -320,16 +329,25 @@ function style(t) {
         checkproductionColoIconsContainer()
         checkNotifications(),checkForAttack()
         resourceBldsInterval = setInterval(function(){
-            if (checkForOpenDialog()) {
+            if (!allowResourceCheck()) {
                 print('There is an open dialog window, stop resource collection!', 'red', bkg, 'bold')
                 return false
             }
             resourceHarvestInProcess=true
             checkResourceBuildings()
-        }, 30*sec)
+        }, 29.5*sec)
+        
+        setInterval(function(){
+            if (!allowResourceCheck()) {
+                print('There is an open dialog window, stop resource collection!', 'red', bkg, 'bold')
+                return false
+            }
+            checkproductionColoIconsContainer()
+        }, 21.5*sec)
+        
         setInterval(checkNotifications, 60*sec)
         setInterval(checkForAttack, 5*sec)
-        setInterval(checkproductionColoIconsContainer, 20*sec)
+        
     })
     
     function triggerMouseEvent (node, eventType) {
