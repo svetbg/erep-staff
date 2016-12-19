@@ -46,8 +46,6 @@ function style(t) {
     function allowResourceCheck()
     {
         var urlParts = parseUrl()
-        console.log(urlParts)
-        console.log(urlParts.indexOf('overview'))
         if (urlParts.indexOf('overview') == -1) {
             return false
         }
@@ -74,6 +72,8 @@ function style(t) {
         var now = new Date().getTime()
         var randomNumber = generateRandomNumber(5,7)
         print('randomNumber: '+randomNumber)
+        
+        //return false
         
         if (fullCheck[cityId] == undefined) {
             fullCheck[cityId] = now
@@ -335,7 +335,7 @@ function style(t) {
             }
             resourceHarvestInProcess=true
             checkResourceBuildings()
-        }, 29.5*sec)
+        }, 11*sec)
         
         setInterval(function(){
             if (!allowResourceCheck()) {
@@ -343,7 +343,7 @@ function style(t) {
                 return false
             }
             checkproductionColoIconsContainer()
-        }, 21.5*sec)
+        }, 14*sec)
         
         setInterval(checkNotifications, 60*sec)
         setInterval(checkForAttack, 5*sec)
