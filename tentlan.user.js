@@ -17,7 +17,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL='svetbg@gmail.com'
+    var USER_EMAIL=''
     var urlParams = [],cityId=0
     var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0, today=new Date(),attackTimeThreshold = 30*60
     var wait = 5*sec,notificationCount=0,resourceBldsInterval=false,bkg='#ccc'
