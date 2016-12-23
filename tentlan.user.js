@@ -17,7 +17,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL=''
+    var USER_EMAIL='svetbg@gmail.com'
     var urlParams = [],cityId=0
     var sec = 1e3, notified = false, workDuration = [600,3600,14400,28800], workChoice = 0, today=new Date(),attackTimeThreshold = 30*60
     var wait = 5*sec,notificationCount=0,resourceBldsInterval=false,bkg='#ccc'
@@ -47,6 +47,11 @@ function style(t) {
     {
         var urlParts = parseUrl()
         if (urlParts.indexOf('overview') == -1) {
+            return false
+        }
+        
+        if (resourceHarvestInProcess) {
+            print('Harvesting in process, skip...', 'red', bkg, 'bold')
             return false
         }
         
@@ -225,18 +230,13 @@ function style(t) {
     
     function checkproductionColoIconsContainer()
     {
-        if (resourceHarvestInProcess) {
-            print('Harvesting in process, skip...', 'red', bkg, 'bold')
-            return false
-        }
-        
         var prodColoCont = $('div#productionColoIconsContainer > div.productionColoIcon:visible')
         
         if (prodColoCont.length) {
             print('Clearing interval resourceBldsInterval')
             clearInterval(resourceBldsInterval)
             $(prodColoCont[0]).trigger('click')
-            setTimeout(function() {checkResourceBuildings()}, sec)
+            setTimeout(function() {checkResourceBuildings()}, 3*sec)
             print('Starting resourceBldsInterval')
             resourceBldsInterval = setInterval(function(){
                 if (!allowResourceCheck()) {
@@ -245,7 +245,7 @@ function style(t) {
                 }
                 resourceHarvestInProcess=true
                 checkResourceBuildings()
-            }, 30*sec)
+            }, 21*sec)
         } else {
             print('No resources rdy in other cities!', 'green', bkg, 'bold')
         }
@@ -292,7 +292,7 @@ function style(t) {
                                     }
                                 });
                             }
-                            attackSnd.play()
+                            //attackSnd.play()
                             return
                         }
                     })
@@ -336,7 +336,7 @@ function style(t) {
             }
             resourceHarvestInProcess=true
             checkResourceBuildings()
-        }, 11*sec)
+        }, 21*sec)
         
         setInterval(function(){
             if (!allowResourceCheck()) {
@@ -347,7 +347,7 @@ function style(t) {
         }, 14*sec)
         
         setInterval(checkNotifications, 60*sec)
-        setInterval(checkForAttack, 5*sec)
+        setInterval(checkForAttack, sec)
         
     })
     
