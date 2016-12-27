@@ -135,7 +135,7 @@ function style(t) {
     var resourceHarvestInProcess = false
     function harvestAction(building)
     {
-        var dialog = $('#dialogContainer')
+        var dialog = $('#'+building+'Window').parent().parent()
         
         var async1 = $.when( collect(building, dialog) ).then(function(){ return startProduction(building, dialog); });
         
