@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg2.tentlan.com/overview*
-// @version      1.0.2
+// @version      1.1.0
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -17,7 +17,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL=''
+    var USER_EMAIL='svetbg@gmail.com'
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=0, today=new Date(),attackTimeThreshold=30*60,problemBuildings=[]
     var wait = 6*sec,notificationCount=0,resourceBldsInterval=false,bkg='#ccc'
@@ -218,33 +218,8 @@ function style(t) {
         }
         
         resourceHarvestInProcess = true
-        /*
-        var delay=0
-        $(resourceBuildings).each(function(k, v){
-            setTimeout(function(){
-                startResourceHarvesting(v, forFullCheck)
-            }, delay)
-            delay+=wait
-        })
-        */
         bIndex=0
         resourceLoop(forFullCheck)
-    }
-    
-    function startResourceHarvesting(building, forFullCheck)
-    {
-        print('Trying to harvest '+building)
-        var harvest = $('div[data-building="'+building+'"] > div.productionDoneIcon:visible').length
-        print('====== harvest '+harvest)
-        if (harvest == 1 || forFullCheck) {
-            var area = $('area[data-building="'+building+'"]')
-            area.trigger('click')
-            //naturalClick(area[0])
-
-            setTimeout(function(){
-                harvestAction(building)
-            }, sec)
-        }
     }
     
     function loadResourceBuilding(forFullCheck)
@@ -265,6 +240,8 @@ function style(t) {
             setTimeout(function(){
                 $.when(harvestAction(v)).then(function(){dfd.resolve()})
             }, sec)
+        } else {
+            dfd.resolve()
         }
         
         return dfd.promise()
@@ -280,10 +257,10 @@ function style(t) {
             });
         } else {
             print('End resource loop: '+bIndex)
-            //if (building == resourceBuildings[resourceBuildings.length-1]) {
-            //resourceHarvestInProcess = false
-            //print('Stopping the harvest process.', 'green', bkg, 'bold')
-            //}
+            if (resourceHarvestInProcess) {
+                resourceHarvestInProcess = false
+                print('Stopping the harvest process.', 'green', bkg, 'bold')
+            }
         }
     }
     
@@ -312,14 +289,14 @@ function style(t) {
         if (prodColoCont.length) {
             clearInterval(resourceBldsInterval)
             setTimeout(function() {$(prodColoCont[0]).trigger('click')}, 0.5*sec)
-            setTimeout(function() {checkResourceBuildings()}, 3*sec)
+            setTimeout(function() {checkResourceBuildings()}, 2*sec)
             resourceBldsInterval = setInterval(function(){
                 if (!allowResourceCheck()) {
                     return false
                 }
                 resourceHarvestInProcess=true
                 checkResourceBuildings()
-            }, 26*sec)
+            }, 17*sec)
         } else {
             print('No resources rdy in other cities!', 'green', bkg, 'bold')
         }
@@ -414,7 +391,7 @@ function style(t) {
             }
             resourceHarvestInProcess=true
             checkResourceBuildings()
-        }, 26*sec)
+        }, 17*sec)
         
         setInterval(function(){
             if (!allowResourceCheck()) {
