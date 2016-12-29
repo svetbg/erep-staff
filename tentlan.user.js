@@ -204,14 +204,14 @@ function style(t) {
         resourceBuildings = onlyForHarvestBlds
         if (problemBuildings[cityId] && problemBuildings[cityId].length > 0) {
             for (var i=0; i<problemBuildings[cityId].length; ++i) {
-                if (onlyForHarvestBlds.indexOf(problemBuildings[cityId][i]) == -1) {
-                    onlyForHarvestBlds.push(problemBuildings[cityId][i])
+                if (resourceBuildings.indexOf(problemBuildings[cityId][i]) == -1) {
+                    resourceBuildings.push(problemBuildings[cityId][i])
                     problemBuildings[cityId].splice(i, 1)
                 }
             }
         }
         
-        if (!onlyForHarvestBlds.length) {
+        if (!resourceBuildings.length) {
             resourceHarvestInProcess=false
             print('Harvesting ended (quick)', 'green', bkg, 'bold')
             return false
