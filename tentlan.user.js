@@ -17,7 +17,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var USER_EMAIL='svetbg@gmail.com'
+    var USER_EMAIL=''
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=0, today=new Date(),attackTimeThreshold=30*60,problemBuildings=[]
     var wait = 6*sec,notificationCount=0,resourceBldsInterval=false,bkg='#ccc'
@@ -40,7 +40,14 @@ function style(t) {
         var color=color==undefined?'black':color
         var bold=bold==undefined?'normal':bold
         
-        console.log(new Date().toUTCString()+' %c'+msg, 'background: '+background+'; color: '+color+'; font-weight: '+bold)
+        console.log(getTime()+' %c'+msg, 'background: '+background+'; color: '+color+'; font-weight: '+bold)
+    }
+    
+    function getTime()
+    {
+        var now = new Date()
+        
+        return now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'.'+now.getMilliseconds()
     }
     
     function allowResourceCheck()
@@ -86,7 +93,7 @@ function style(t) {
         var now = new Date().getTime()
         var randomNumber = generateRandomNumber(5,7)
         
-        //return false
+        return false
         
         if (fullCheck[cityId] == undefined) {
             fullCheck[cityId] = now
@@ -147,6 +154,7 @@ function style(t) {
     var resourceHarvestInProcess = false
     function harvestAction(building)
     {
+        var dfd = $.Deferred()
         var dialog = $('#'+building+'Window').parent().parent()
         
         var async1 = $.when( collect(building, dialog) ).then(function(){ return startProduction(building, dialog); });
@@ -159,12 +167,14 @@ function style(t) {
                     print('Stopping the harvest process.', 'green', bkg, 'bold')
                 }
                 dialog.find('.wclose').trigger('click')
+                dfd.resolve()
             }, 200)
-        });
+        })
         
-        
+        return dfd.promise()
     }
     
+    var bIndex = 0
     function checkResourceBuildings()
     {
         cityId=parseInt($('#citySelectorValue').val())
@@ -177,16 +187,12 @@ function style(t) {
         }
         
         var forFullCheck = isFullCheck(cityId)
-        
-        
-        // @TODO: remove below row when obsolete
-        resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
         var onlyForHarvestBlds = getRdyForCollectBlds()
         
-        var delay=0
         print('Check for harvesting started, fullCheck: '+forFullCheck, 'yellow', bkg, 'bold')
         
         // @TODO: remove below code when obsolete
+        resourceBuildings = ['ObsidianMine', 'Quarry', 'CornFarm', 'CacaoPlantation']
         if (forFullCheck) {
             $(resourceBuildings).each(function(k, v){
                 if (onlyForHarvestBlds.indexOf(v) == -1) {
@@ -198,78 +204,87 @@ function style(t) {
         resourceBuildings = onlyForHarvestBlds
         if (problemBuildings[cityId] && problemBuildings[cityId].length > 0) {
             for (var i=0; i<problemBuildings[cityId].length; ++i) {
-                if (resourceBuildings.indexOf(problemBuildings[cityId][i]) == -1) {
-                    resourceBuildings.push(problemBuildings[cityId][i])
+                if (onlyForHarvestBlds.indexOf(problemBuildings[cityId][i]) == -1) {
+                    onlyForHarvestBlds.push(problemBuildings[cityId][i])
                     problemBuildings[cityId].splice(i, 1)
                 }
             }
         }
         
-        if (!resourceBuildings.length) {
+        if (!onlyForHarvestBlds.length) {
             resourceHarvestInProcess=false
             print('Harvesting ended (quick)', 'green', bkg, 'bold')
             return false
         }
         
         resourceHarvestInProcess = true
-        var bIndex = 0
-        
+        /*
+        var delay=0
         $(resourceBuildings).each(function(k, v){
             setTimeout(function(){
-                print('Trying to harvest '+v)
-                var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-                print('====== harvest '+harvest)
-                if (harvest == 1 || forFullCheck) {
-                    setTimeout(function() {
-                        var area = $('area[data-building="'+v+'"]')
-                        area.trigger('click')
-                        //naturalClick(area[0])
-                    }, 0.5*sec)
-
-                    setTimeout(function(){
-                        harvestAction(v)
-                    }, sec)
-                }
+                startResourceHarvesting(v, forFullCheck)
             }, delay)
             delay+=wait
         })
-        
-        //loadResourceBuilding(forFullCheck, bIndex)
+        */
+        bIndex=0
+        resourceLoop(forFullCheck)
     }
     
-    function loadResourceBuilding(forFullCheck, bIndex)
+    function startResourceHarvesting(building, forFullCheck)
     {
-        var v = resourceBuildings[bIndex]
-        if (bIndex < resourceBuildings.length) {
-            print('Trying to harvest '+v)
-            /*
-            var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
-            print('====== harvest '+harvest)
-            if (harvest == 1 || forFullCheck) {
-                setTimeout(function() {
-                    var area = $('area[data-building="'+v+'"]')
-                    area.trigger('click')
-                    //naturalClick(area[0])
-                }, 0.5*sec)
+        print('Trying to harvest '+building)
+        var harvest = $('div[data-building="'+building+'"] > div.productionDoneIcon:visible').length
+        print('====== harvest '+harvest)
+        if (harvest == 1 || forFullCheck) {
+            var area = $('area[data-building="'+building+'"]')
+            area.trigger('click')
+            //naturalClick(area[0])
 
-                setTimeout(function(){
-                    harvestAction(v)
-                }, sec)
-            }
-            */
             setTimeout(function(){
-                print(bIndex)
-                test()
-                ++bIndex
-                loadResourceBuilding(forFullCheck, bIndex)
+                harvestAction(building)
+            }, sec)
+        }
+    }
+    
+    function loadResourceBuilding(forFullCheck)
+    {
+        var dfd = $.Deferred();
+        var v = resourceBuildings[bIndex]
+        
+        print('Trying to harvest '+v)
+        var harvest = $('div[data-building="'+v+'"] > div.productionDoneIcon:visible').length
+        print('====== harvest '+harvest)
+        if (harvest == 1 || forFullCheck) {
+            setTimeout(function() {
+                var area = $('area[data-building="'+v+'"]')
+                area.trigger('click')
+                //naturalClick(area[0])
+            }, 0.5*sec)
+
+            setTimeout(function(){
+                $.when(harvestAction(v)).then(function(){dfd.resolve()})
             }, sec)
         }
         
+        return dfd.promise()
     }
     
-    function test()
+    function resourceLoop(forFullCheck)
     {
-        setTimeout(function(){print('a')}, sec)
+        if (bIndex<resourceBuildings.length) {
+            print('Start resource loop: '+bIndex)
+            $.when( loadResourceBuilding(forFullCheck) ).then(function(){
+                bIndex++
+                setTimeout(function(){resourceLoop(forFullCheck)}, sec)
+            });
+        } else {
+            print('End resource loop: '+bIndex)
+            //if (building == resourceBuildings[resourceBuildings.length-1]) {
+            //resourceHarvestInProcess = false
+            //print('Stopping the harvest process.', 'green', bkg, 'bold')
+            //}
+        }
     }
     
     function checkNotifications()
@@ -295,11 +310,9 @@ function style(t) {
         var prodColoCont = $('div#productionColoIconsContainer > div.productionColoIcon:visible')
         
         if (prodColoCont.length) {
-            print('Clearing interval resourceBldsInterval')
             clearInterval(resourceBldsInterval)
-            $(prodColoCont[0]).trigger('click')
+            setTimeout(function() {$(prodColoCont[0]).trigger('click')}, 0.5*sec)
             setTimeout(function() {checkResourceBuildings()}, 3*sec)
-            print('Starting resourceBldsInterval')
             resourceBldsInterval = setInterval(function(){
                 if (!allowResourceCheck()) {
                     return false
@@ -459,7 +472,7 @@ function style(t) {
     
     var myListener = function () {
         document.removeEventListener('mousemove', myListener, false);
-        print('Mousemove')
+        //print('Mousemove')
     };
 
     document.addEventListener('mousemove', myListener, false);
