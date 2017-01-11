@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev Market Improvements
 // @include      *www.erevollution.com/*/market*
-// @version      0.0.4
+// @version      0.0.5
 // @description  Erev Market Improvements
 // @author       Anonymous
 // @grant        none
@@ -27,15 +27,23 @@ function style(t) {
     $( document ).ready(function() {
         parseUrl()
         
-        urlParams['category']>0&&show('panel', urlParams['category'])
+        //urlParams['category']>0&&show('panel', urlParams['category'])
         if (urlParams['category'] == 4) {
-            $('div.main-box-body tr:gt(0)').each(function(){
+            $('div.vsTable tr:gt(0)').each(function(){
                 var priceTD = $(this).find('td.vs129')
                 var price = parseFloat(priceTD.find('strong').html().replace(' ',''))||0
-                var usage = parseInt($(this).find('span.defense strong').html())||0
+                var usage = getUsage(this)
                 var usagePerOneNrg = parseFloat(price/usage).toFixed(4)
                 priceTD.html(priceTD.html()+'<br />'+usagePerOneNrg+' / nrg')
             })
         }
     })
+    
+    function getUsage(el)
+    {
+        var stars = $(el).find('div.vs108 > i').attr('class')
+        var qualityRe = /[\d]+/g
+        return parseInt(qualityRe.exec(stars)[0])*2
+        
+    }
 })()
