@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Erev HomePage Improvements
 // @include      *www.erevollution.com*
-// @version      0.1.0
+// @version      0.1.1
 // @description  Erev HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -55,7 +55,7 @@ function style(t) {
                 spanValue.prev().html(spanValue.prev().html()+' ('+(qty*foodQuality*2)+')')
             })
             
-            $('div.vsPanel-title').text($('div.vsPanel-title').text() + ' Energy: '+totalNrj)
+            $('div.vsPanel-title').text($('div.vsPanel-title').text() + ', Energy ['+totalNrj+']')
         }
         
         function improveMenu()
