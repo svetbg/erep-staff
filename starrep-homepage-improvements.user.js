@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      1.0.0
+// @version      1.1.0
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -22,80 +22,36 @@ function style(t) {
         var humanLikeClickTime = 2000  // microsecods
         var pathInfoArr = parseUrl()
         
+        //setInterval(function(){if (parseInt($('div.power-wrapper span.power-value').text()) > 0) $('form.battle-form button.red-btn').trigger('click')}, 250)
+        
         //autoVisitPages()        
         
         if (pathInfoArr.length <= 2) {
             var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
             setTimeout(checkEnergy, humanLikeClickTime)
+            setTimeout(checkExploreNew, humanLikeClickTime)
         }
         
-        var exploreTime = 0
-        $.cookie.raw = true;
-        if (!$.cookie("exploreTimeout")) {
-            setTimeout(checkExploration, humanLikeClickTime)
-        } else {
-            if (pathInfoArr.length <= 2) {
-                randomNumber = generateRandomNumber()
-                //var refreshTimeToExplore = parseInt($.cookie("exploreTimeout"))/4 - randomNumber*60
-                if (randomNumber < 3) randomNumber = 4
-                setTimeout(function(){window.location.reload()}, randomNumber*6e4)
+        explore()
+        
+        function checkExploreNew()
+        {
+            var explorationCheckEl = $('.exploration-timer')
+            if (explorationCheckEl.text() == 'Exploration ready') {
+                window.location = '/exploration/'
             }
         }
         
-        var exploreTimeout = ''
-        
-        function checkExploration()
+        function explore()
         {
             var pathInfoArr = parseUrl()
-            
-            if (pathInfoArr.length <= 2) {
-                window.location = '/exploration/'
+            if (pathInfoArr.indexOf('exploration') < 0) {
                 return false
             }
             
-            setTimeout(function() {
-                getExploreTimeout()
-                $.cookie('exploreTimeout', null, { path: '/'});
-                var date = new Date();
-                var m = 30;
-                date.setTime(date.getTime() + (m * 60 * 1000));
-                if (exploreTimeout) {
-                    console.log('Exploration still cooling down: '+exploreTimeout)
-                    exploreTime = timeToSeconds(exploreTimeout)
-                    //var date = new Date()
-                    //console.log(date)
-                    //var m = 10;
-                    //var newTime = date.getTime() + exploreTime*1000
-                    //date.setTime(newTime)
-                    //console.log(date)
-                    $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                    setTimeout(function(){window.location='/'}, 5e2)
-                } else {
-                    var exploreBtn = $('div.explore div.explore-cell')
-                    if (exploreBtn) {
-                        var tokenImg = exploreBtn.find('img.credits-img')
-                        if (tokenImg.length) {
-                            console.log('Explore wants tokens?!')
-                            setTimeout(function(){window.location='/'}, 5e2)
-                        } else {
-                            console.log('Click should be triggered')
-                            //var date = new Date()
-                            //exploreTime = timeToSeconds('08:00:00')
-                            //var newTime = date.getTime() + exploreTime*1000
-                            //date.setTime(newTime)
-
-                            $.cookie("exploreTimeout", exploreTime, { path: '/', expires: date });
-                            setTimeout(function(){$(exploreBtn[generateRandomNumber()]).trigger('click');setTimeout(function(){window.location='/'},1e3)}, 5e2)
-                        }
-                    }
-                }
-            }, humanLikeClickTime)
-        }
-        
-        function getExploreTimeout()
-        {
-            var exploreTimer = $('div.exploration > div.timer')
-            exploreTimeout = exploreTimer.html()
+            var exploreBtn = $('div.explore div.explore-cell')
+            $(exploreBtn[generateRandomNumber()]).trigger('click');
+            setTimeout(function(){window.location='/'},1e3)
         }
         
         function parseUrl()
