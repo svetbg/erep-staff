@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      1.1.0
+// @version      1.1.1
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -28,6 +28,7 @@ function style(t) {
         
         if (pathInfoArr.length <= 2) {
             var checkEnergyInterval = setInterval(checkEnergy, randomNumber*6e4)
+            var checkExploreNewInterval = setInterval(checkExploreNew, randomNumber*6e4)
             setTimeout(checkEnergy, humanLikeClickTime)
             setTimeout(checkExploreNew, humanLikeClickTime)
         }
