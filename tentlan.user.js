@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.2
+// @version      1.2.5
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -330,9 +330,11 @@ function style(t) {
                 })
             })
             res = sortByDist(res)
+            var infoText = ''
             $.each(res, function(idx2, barb){
-                console.log(barb.x +':'+ barb.y, barb.name, '('+barb.tier+')', barb.distance)
+                infoText += barb.x +':'+ barb.y + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance + "\n"
             })
+            console.log(infoText)
         } )
         
     }
@@ -392,6 +394,11 @@ function style(t) {
         return {'x': rootX, 'y': rootY}
     }
     
+    function improveSettings()
+    {
+        $('div#menuLinkWorldmap').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"margin-left: 7px; cursor: pointer; border: 2px solid white;\"></div>")
+    }
+    
     $( document ).ready(function() {
         
         var random_number = generateRandomNumber(5, 10)
@@ -400,8 +407,11 @@ function style(t) {
             //window.location.href='/overview'
         }, random_number*sec*60)
         
+        improveSettings()
+        $('#findBarbs').on('click', function(){
+            checkForBarbs()
+        })
         
-        checkForBarbs()
         
         checkResourceBuildings()
         resourceBldsInterval = setInterval(function(){
