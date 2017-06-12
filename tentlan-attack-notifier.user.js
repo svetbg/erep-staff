@@ -134,6 +134,12 @@
         }
     }
     
+    function goToCapital()
+    {
+        var citySelect = $('.tselectMenu>ul>li')
+        naturalClick(citySelect[0])
+    }
+    
     function triggerMouseEvent (node, eventType) {
         var clickEvent = document.createEvent ('MouseEvents');
         clickEvent.initEvent (eventType, true, true);
@@ -157,6 +163,7 @@
             closeNotifications()
         }, sec)
         
-        gotToMap()
+        goToCapital()
+        //gotToMap()
     })
 })();
