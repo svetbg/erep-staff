@@ -6,6 +6,7 @@
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
 // @grant        GM_xmlhttpRequest
+// @grant        GM_addStyle
 // @connect      www.fiong.com
 // ==/UserScript==
 
@@ -304,13 +305,72 @@ function style(t) {
         }
     }
     
+    function checkForBarbs(level)
+    {
+        $.post('/rest/getmapmeta', {'metaTiles[]': coordsLookup}, function () {
+            //console.log ('jQuery.post worked');
+        } )
+            .done ( function (respObj) {
+            $.each(respObj, function(idx, el){
+                $.each(el.npcData, function (idx1, npc){
+                    if (npc.tier == level) {
+                        var $coordinates = calculateCoordinates(idx, idx1)
+                        console.log($coordinates, npc.cityName, npc.tier)
+                    }
+                })
+            })
+        } )
+        ;
+        
+    }
+    
+    function sortByDist(result)
+    {
+        if ((result.length)) {
+            result.sort(function(a, b){return a.distance > b.distance ? 1 : -1;})
+        }
+        
+        return result
+    }
+    
+    function splitTopCoordinates($topCoordinates)
+    {
+        var topCoordinates = String($topCoordinates)
+        var $x = $topCoordinates.substr(0, 3);
+        var $y = $topCoordinates.substr(3);
+
+        return {'x' : parseInt($x), 'y' : parseInt($y)};
+    }
+    
+    function calculateCoordinates($topCoordinates, $concreteCoordinates)
+    {
+        if (!$topCoordinates || !$concreteCoordinates) {
+            throw new InvalidArgumentException('Not a valid coordinates');
+        }
+
+        var $splitTopCoordinates = splitTopCoordinates($topCoordinates);
+        var $x = ($splitTopCoordinates.x) + Math.ceil(($concreteCoordinates)/20);
+        var $y = ($splitTopCoordinates.y) + (($concreteCoordinates) % 20) + 1;
+
+        return {'x' : $y, 'y' : $x};
+    }
+    
+    function calculateDistance($cityCoords, $barbCoords)
+    {
+        return Math.sqrt(Math.pow((parseInt($cityCoords.x)-$barbCoords['x']), 2) + Math.pow(($cityCoords['y']-$barbCoords['y']), 2));
+    }
+    
+    var coordsLookup = [460460, 480480, 500500, 440440, 460480]
     $( document ).ready(function() {
         
         var random_number = generateRandomNumber(5, 10)
-        print('The page will refresh in '+random_number+' minutes')
+        //print('The page will refresh in '+random_number+' minutes')
         setTimeout(function(){
             //window.location.href='/overview'
         }, random_number*sec*60)
+        
+        
+        checkForBarbs(9)
         
         checkResourceBuildings()
         resourceBldsInterval = setInterval(function(){
