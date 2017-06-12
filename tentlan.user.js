@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.1
+// @version      1.2.2
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -18,7 +18,8 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
+    //var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
+    var coordsLookup = []
     var barbsLvlLookup = 9
     var warringCity = {'x': 474, 'y': 475}
     
@@ -312,6 +313,8 @@ function style(t) {
     function checkForBarbs(level)
     {
         if (level === undefined) level  = barbsLvlLookup
+        if (coordsLookup.length == 0) coordsLookup = generateRegions()
+        
         $.post('/rest/getmapmeta', {'metaTiles[]': coordsLookup}, function () {
             //console.log ('jQuery.post worked');
         } )
@@ -370,6 +373,24 @@ function style(t) {
         return Math.sqrt(Math.pow((($cityCoords.x)-$barbCoords.x), 2) + Math.pow(($cityCoords.y-$barbCoords.y), 2));
     }
     
+    function generateRegions()
+    {
+        var root = getRootRegion()
+        var leftX = root.x-20
+        var rightX = root.x+20
+        var upperY = root.y-20
+        var lowerY = root.y+20
+        
+        return [leftX+''+upperY, root.x+''+upperY, rightX+''+upperY, leftX+''+root.y, root.x+''+root.y, rightX+''+root.y, leftX+''+lowerY, root.x+''+lowerY, rightX+''+lowerY]
+    }
+    
+    function getRootRegion()
+    {
+        var rootX = Math.floor(warringCity.x/20) * 20
+        var rootY = Math.floor(warringCity.y/20) * 20
+        
+        return {'x': rootX, 'y': rootY}
+    }
     
     $( document ).ready(function() {
         
