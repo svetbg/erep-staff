@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.0
+// @version      1.2.1
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -17,6 +17,10 @@ function style(t) {
 (function() {
     'use strict';
     style("select {display:table-cell;}");
+    
+    var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
+    var barbsLvlLookup = 9
+    var warringCity = {'x': 474, 'y': 475}
     
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=1, today=new Date(),problemBuildings=[]
@@ -307,20 +311,26 @@ function style(t) {
     
     function checkForBarbs(level)
     {
+        if (level === undefined) level  = barbsLvlLookup
         $.post('/rest/getmapmeta', {'metaTiles[]': coordsLookup}, function () {
             //console.log ('jQuery.post worked');
         } )
             .done ( function (respObj) {
+            var res = []
             $.each(respObj, function(idx, el){
                 $.each(el.npcData, function (idx1, npc){
                     if (npc.tier == level) {
                         var $coordinates = calculateCoordinates(idx, idx1)
-                        console.log($coordinates, npc.cityName, npc.tier)
+                        var distance = calculateDistance(warringCity, $coordinates)
+                        res.push({'name': npc.cityName, 'x': $coordinates.x, 'y': $coordinates.y, 'distance': distance, 'tier': npc.tier})
                     }
                 })
             })
+            res = sortByDist(res)
+            $.each(res, function(idx2, barb){
+                console.log(barb.x +':'+ barb.y, barb.name, '('+barb.tier+')', barb.distance)
+            })
         } )
-        ;
         
     }
     
@@ -357,10 +367,10 @@ function style(t) {
     
     function calculateDistance($cityCoords, $barbCoords)
     {
-        return Math.sqrt(Math.pow((parseInt($cityCoords.x)-$barbCoords['x']), 2) + Math.pow(($cityCoords['y']-$barbCoords['y']), 2));
+        return Math.sqrt(Math.pow((($cityCoords.x)-$barbCoords.x), 2) + Math.pow(($cityCoords.y-$barbCoords.y), 2));
     }
     
-    var coordsLookup = [460460, 480480, 500500, 440440, 460480]
+    
     $( document ).ready(function() {
         
         var random_number = generateRandomNumber(5, 10)
@@ -370,7 +380,7 @@ function style(t) {
         }, random_number*sec*60)
         
         
-        checkForBarbs(9)
+        checkForBarbs()
         
         checkResourceBuildings()
         resourceBldsInterval = setInterval(function(){
