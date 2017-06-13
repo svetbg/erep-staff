@@ -1,7 +1,7 @@
   // ==UserScript==
 // @name         Tentlan Attack Notifier
 // @include      *bg*.tentlan.com/*
-// @version      1.0.0
+// @version      1.0.1
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -136,8 +136,10 @@
     
     function goToCapital()
     {
+        var citySelector = $('#citySelector')
         var citySelect = $('.tselectMenu>ul>li')
-        naturalClick(citySelect[0])
+        naturalClick(citySelector[0])
+        setTimeout(function(){naturalClick(citySelect[0])}, 500)
     }
     
     function triggerMouseEvent (node, eventType) {
@@ -163,7 +165,7 @@
             closeNotifications()
         }, sec)
         
-        goToCapital()
+        //goToCapital()
         //gotToMap()
     })
 })();
