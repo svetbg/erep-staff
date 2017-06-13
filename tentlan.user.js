@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.5
+// @version      1.2.6
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -351,8 +351,8 @@ function style(t) {
     function splitTopCoordinates($topCoordinates)
     {
         var topCoordinates = String($topCoordinates)
-        var $x = $topCoordinates.substr(0, 3);
-        var $y = $topCoordinates.substr(3);
+        var $x = topCoordinates.substr(0, 3);
+        var $y = topCoordinates.substr(3);
 
         return {'x' : parseInt($x), 'y' : parseInt($y)};
     }
@@ -399,6 +399,19 @@ function style(t) {
         $('div#menuLinkWorldmap').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"margin-left: 7px; cursor: pointer; border: 2px solid white;\"></div>")
     }
     
+    function getCapital()
+    {
+        return $('.tselectMenu>ul>li')
+    }
+    
+    function getCapitalCoords()
+    {
+        var capitalCont = getCapital()
+        warringCity = splitTopCoordinates(parseInt($(capitalCont[0]).attr('data-position')) + 2)
+        
+        return warringCity
+    }
+    
     $( document ).ready(function() {
         
         var random_number = generateRandomNumber(5, 10)
@@ -408,7 +421,9 @@ function style(t) {
         }, random_number*sec*60)
         
         improveSettings()
+        
         $('#findBarbs').on('click', function(){
+            getCapitalCoords()
             checkForBarbs()
         })
         
