@@ -367,7 +367,6 @@ function style(t) {
         var $splitTopCoordinates = splitTopCoordinates($topCoordinates);
         var $x = ($splitTopCoordinates.x) + Math.floor(($concreteCoordinates)/matrixSize) + 1;
         var $y = ($splitTopCoordinates.y) + (($concreteCoordinates) % matrixSize) + 1;
-        console.log('topcoordinates: ', $topCoordinates, 'splited: ', $splitTopCoordinates, 'x: ', $x, 'y: ', $y);
         return {'y' : $y, 'x' : $x};
     }
     
@@ -386,19 +385,6 @@ function style(t) {
         var lowerY = root.y+matrixSize
         
         return [leftX+''+upperY, root.x+''+upperY, rightX+''+upperY, leftX+''+root.y, root.x+''+root.y, rightX+''+root.y, leftX+''+lowerY, root.x+''+lowerY, rightX+''+lowerY]
-        /*
-        return [
-                upperY+''+leftX, 
-                upperY+''+root.x, 
-                upperY+''+rightX, 
-                root.y+''+leftX, 
-                root.y+''+root.x, 
-                root.y+''+rightX, 
-                lowerY+''+leftX, 
-                lowerY+''+root.x, 
-                lowerY+''+rightX
-               ]
-               */
     }
     
     function getRootRegion()
