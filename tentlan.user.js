@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.8
+// @version      1.2.9
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -21,7 +21,7 @@ function style(t) {
     //var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
     var coordsLookup = []
     var barbsLvlLookup = 9, autoGetCapitalCoords = true
-    var warringCity = {'x': 492, 'y': 600}
+    var warringCity = {'x': 514, 'y': 486}
     
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=1, today=new Date(),problemBuildings=[]
@@ -403,7 +403,9 @@ function style(t) {
     function getCapitalCoords()
     {
         var capitalCont = getCapital()
-        warringCity = splitTopCoordinates(parseInt($(capitalCont[0]).attr('data-position')) + 2)
+        warringCity = splitTopCoordinates($(capitalCont[0]).attr('data-position'))
+        warringCity.x += 1
+        warringCity.y += 1
         
         return warringCity
     }
