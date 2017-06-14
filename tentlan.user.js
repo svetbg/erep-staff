@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.7
+// @version      1.2.8
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -352,8 +352,8 @@ function style(t) {
     function splitTopCoordinates($topCoordinates)
     {
         var topCoordinates = String($topCoordinates)
-        var $y = topCoordinates.substr(0, 3);
-        var $x = topCoordinates.substr(3);
+        var $x = topCoordinates.substr(0, 3);
+        var $y = topCoordinates.substr(3);
 
         return {'x' : parseInt($x), 'y' : parseInt($y)};
     }
@@ -365,10 +365,10 @@ function style(t) {
         }
 
         var $splitTopCoordinates = splitTopCoordinates($topCoordinates);
-        var $y = ($splitTopCoordinates.y) + Math.ceil(($concreteCoordinates)/matrixSize);
-        var $x = ($splitTopCoordinates.x) + (($concreteCoordinates) % matrixSize) + 1;
-
-        return {'x' : $y, 'y' : $x};
+        var $x = ($splitTopCoordinates.x) + Math.floor(($concreteCoordinates)/matrixSize) + 1;
+        var $y = ($splitTopCoordinates.y) + (($concreteCoordinates) % matrixSize) + 1;
+        console.log('topcoordinates: ', $topCoordinates, 'splited: ', $splitTopCoordinates, 'x: ', $x, 'y: ', $y);
+        return {'y' : $y, 'x' : $x};
     }
     
     function calculateDistance($cityCoords, $barbCoords)
@@ -386,6 +386,19 @@ function style(t) {
         var lowerY = root.y+matrixSize
         
         return [leftX+''+upperY, root.x+''+upperY, rightX+''+upperY, leftX+''+root.y, root.x+''+root.y, rightX+''+root.y, leftX+''+lowerY, root.x+''+lowerY, rightX+''+lowerY]
+        /*
+        return [
+                upperY+''+leftX, 
+                upperY+''+root.x, 
+                upperY+''+rightX, 
+                root.y+''+leftX, 
+                root.y+''+root.x, 
+                root.y+''+rightX, 
+                lowerY+''+leftX, 
+                lowerY+''+root.x, 
+                lowerY+''+rightX
+               ]
+               */
     }
     
     function getRootRegion()
