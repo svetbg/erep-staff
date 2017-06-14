@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.9
+// @version      1.3.0
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -349,30 +349,37 @@ function style(t) {
         return result
     }
     
-    function splitTopCoordinates($topCoordinates)
+    function splitAbsoluteCoordinates(absCoords)
     {
-        var topCoordinates = String($topCoordinates)
-        var $x = topCoordinates.substr(0, 3);
-        var $y = topCoordinates.substr(3);
+        absCoords = String(absCoords)
+        var $x = absCoords.substr(0, 3);
+        var $y = absCoords.substr(3);
 
         return {'x' : parseInt($x), 'y' : parseInt($y)};
     }
     
-    function calculateCoordinates($topCoordinates, $concreteCoordinates)
+    function calculateCoordinates(absoluteCoordinates, position)
     {
-        if (!$topCoordinates || !$concreteCoordinates) {
+        if (!absoluteCoordinates || !position) {
             throw new InvalidArgumentException('Not a valid coordinates');
         }
 
-        var $splitTopCoordinates = splitTopCoordinates($topCoordinates);
-        var $x = ($splitTopCoordinates.x) + Math.floor(($concreteCoordinates)/matrixSize) + 1;
-        var $y = ($splitTopCoordinates.y) + (($concreteCoordinates) % matrixSize) + 1;
+        var splitedAbsoluteCoordinates = splitAbsoluteCoordinates(absoluteCoordinates);
+        var $x = (splitedAbsoluteCoordinates.x) + Math.floor((position)/matrixSize) + 1;
+        var $y = (splitedAbsoluteCoordinates.y) + ((position) % matrixSize) + 1;
         return {'y' : $y, 'x' : $x};
     }
     
     function calculateDistance($cityCoords, $barbCoords)
     {
         return Math.sqrt(Math.pow((($cityCoords.x)-$barbCoords.x), 2) + Math.pow(($cityCoords.y-$barbCoords.y), 2));
+    }
+    
+    function convertFromAbsToRealCoords(absCoords)
+    {
+        var splitedAbsoluteCoordinates = splitAbsoluteCoordinates(absCoords)
+        
+        return {'x': (splitedAbsoluteCoordinates.x+1), 'y': (splitedAbsoluteCoordinates.y+1)}
     }
     
     var matrixSize = 20
@@ -403,9 +410,8 @@ function style(t) {
     function getCapitalCoords()
     {
         var capitalCont = getCapital()
-        warringCity = splitTopCoordinates($(capitalCont[0]).attr('data-position'))
-        warringCity.x += 1
-        warringCity.y += 1
+        
+        warringCity = convertFromAbsToRealCoords($(capitalCont[0]).attr('data-position'))
         
         return warringCity
     }
