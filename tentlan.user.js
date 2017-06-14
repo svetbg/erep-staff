@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.2.6
+// @version      1.2.7
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -20,8 +20,8 @@ function style(t) {
     
     //var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
     var coordsLookup = []
-    var barbsLvlLookup = 9
-    var warringCity = {'x': 474, 'y': 475}
+    var barbsLvlLookup = 9, autoGetCapitalCoords = true
+    var warringCity = {'x': 492, 'y': 600}
     
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=1, today=new Date(),problemBuildings=[]
@@ -320,6 +320,7 @@ function style(t) {
         } )
             .done ( function (respObj) {
             var res = []
+            console.log('warringCity', warringCity, coordsLookup)
             $.each(respObj, function(idx, el){
                 $.each(el.npcData, function (idx1, npc){
                     if (npc.tier == level) {
@@ -332,7 +333,7 @@ function style(t) {
             res = sortByDist(res)
             var infoText = ''
             $.each(res, function(idx2, barb){
-                infoText += barb.x +':'+ barb.y + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance + "\n"
+                infoText += barb.y +':'+ barb.x + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance + "\n"
             })
             console.log(infoText)
         } )
@@ -351,8 +352,8 @@ function style(t) {
     function splitTopCoordinates($topCoordinates)
     {
         var topCoordinates = String($topCoordinates)
-        var $x = topCoordinates.substr(0, 3);
-        var $y = topCoordinates.substr(3);
+        var $y = topCoordinates.substr(0, 3);
+        var $x = topCoordinates.substr(3);
 
         return {'x' : parseInt($x), 'y' : parseInt($y)};
     }
@@ -364,8 +365,8 @@ function style(t) {
         }
 
         var $splitTopCoordinates = splitTopCoordinates($topCoordinates);
-        var $x = ($splitTopCoordinates.x) + Math.ceil(($concreteCoordinates)/20);
-        var $y = ($splitTopCoordinates.y) + (($concreteCoordinates) % 20) + 1;
+        var $y = ($splitTopCoordinates.y) + Math.ceil(($concreteCoordinates)/matrixSize);
+        var $x = ($splitTopCoordinates.x) + (($concreteCoordinates) % matrixSize) + 1;
 
         return {'x' : $y, 'y' : $x};
     }
@@ -375,28 +376,24 @@ function style(t) {
         return Math.sqrt(Math.pow((($cityCoords.x)-$barbCoords.x), 2) + Math.pow(($cityCoords.y-$barbCoords.y), 2));
     }
     
+    var matrixSize = 20
     function generateRegions()
     {
         var root = getRootRegion()
-        var leftX = root.x-20
-        var rightX = root.x+20
-        var upperY = root.y-20
-        var lowerY = root.y+20
+        var leftX = root.x-matrixSize
+        var rightX = root.x+matrixSize
+        var upperY = root.y-matrixSize
+        var lowerY = root.y+matrixSize
         
         return [leftX+''+upperY, root.x+''+upperY, rightX+''+upperY, leftX+''+root.y, root.x+''+root.y, rightX+''+root.y, leftX+''+lowerY, root.x+''+lowerY, rightX+''+lowerY]
     }
     
     function getRootRegion()
     {
-        var rootX = Math.floor(warringCity.x/20) * 20
-        var rootY = Math.floor(warringCity.y/20) * 20
+        var rootX = Math.floor(warringCity.x/matrixSize) * matrixSize
+        var rootY = Math.floor(warringCity.y/matrixSize) * matrixSize
         
         return {'x': rootX, 'y': rootY}
-    }
-    
-    function improveSettings()
-    {
-        $('div#menuLinkWorldmap').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"margin-left: 7px; cursor: pointer; border: 2px solid white;\"></div>")
     }
     
     function getCapital()
@@ -412,6 +409,11 @@ function style(t) {
         return warringCity
     }
     
+    function improveSettings()
+    {
+        $('div#menuLinkWorldmap').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"margin-left: 7px; cursor: pointer; border: 2px solid white;\"></div>")
+    }
+    
     $( document ).ready(function() {
         
         var random_number = generateRandomNumber(5, 10)
@@ -423,7 +425,9 @@ function style(t) {
         improveSettings()
         
         $('#findBarbs').on('click', function(){
-            getCapitalCoords()
+            if (autoGetCapitalCoords) {
+                getCapitalCoords()
+            }
             checkForBarbs()
         })
         
