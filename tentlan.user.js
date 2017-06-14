@@ -364,9 +364,9 @@ function style(t) {
             throw new InvalidArgumentException('Not a valid coordinates');
         }
 
-        var splitedAbsoluteCoordinates = splitAbsoluteCoordinates(absoluteCoordinates);
-        var $x = (splitedAbsoluteCoordinates.x) + Math.floor((position)/matrixSize) + 1;
-        var $y = (splitedAbsoluteCoordinates.y) + ((position) % matrixSize) + 1;
+        var splitAbsoluteCoords = splitAbsoluteCoordinates(absoluteCoordinates);
+        var $x = (splitAbsoluteCoords.x) + Math.floor((position)/matrixSize) + 1;
+        var $y = (splitAbsoluteCoords.y) + ((position) % matrixSize) + 1;
         return {'y' : $y, 'x' : $x};
     }
     
