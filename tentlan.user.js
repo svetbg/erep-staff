@@ -377,9 +377,9 @@ function style(t) {
     
     function convertFromAbsToRealCoords(absCoords)
     {
-        var splitedAbsoluteCoordinates = splitAbsoluteCoordinates(absCoords)
+        var splitAbsoluteCoords = splitAbsoluteCoordinates(absCoords)
         
-        return {'x': (splitedAbsoluteCoordinates.x+1), 'y': (splitedAbsoluteCoordinates.y+1)}
+        return {'x': (splitAbsoluteCoords.x+1), 'y': (splitAbsoluteCoords.y+1)}
     }
     
     var matrixSize = 20
