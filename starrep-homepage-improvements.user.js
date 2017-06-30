@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         StarRep HomePage Improvements
 // @include      *www.starrepublik.com*
-// @version      1.1.1
+// @version      1.1.2
 // @description  StarRep HomePage Improvements
 // @author       Anonymous
 // @grant        none
@@ -40,6 +40,10 @@ function style(t) {
             var explorationCheckEl = $('.exploration-timer')
             if (explorationCheckEl.text() == 'Exploration ready') {
                 window.location = '/exploration/'
+            } else {
+                generateRandomNumber()
+                console.log(randomNumber)
+                setTimeout(function(){window.location.reload()}, randomNumber*randomNumber*5.98577*1000)
             }
         }
         
