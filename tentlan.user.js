@@ -17,10 +17,9 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    var coordsLookup = ["440440", "460440", "480440", "440460", "460460", "480460", "440480", "460480", "480480", 460500, 460420, 420460, 500460]
-    //var coordsLookup = []
-    var barbsLvlLookup = 9, autoGetCapitalCoords = true
-    var warringCity = {'x': 419, 'y': 558}
+    //var coordsLookup = ["440440", "460440", "480440", "440460", "460460", "480460", "440480", "460480", "480480", 460500, 460420, 420460, 500460]
+    var coordsLookup = []
+    var barbsLvlLookup = 9, autoGetCapitalCoords = true, warringCity = {'x': 419, 'y': 558}
     
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=1, today=new Date(),problemBuildings=[]
