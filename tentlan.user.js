@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *bg*.tentlan.com/overview*
-// @version      1.3.0
+// @version      1.3.1
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
 // @grant        GM_xmlhttpRequest
-// @grant        GM_addStyle
 // @connect      www.fiong.com
 // ==/UserScript==
 
@@ -18,10 +17,10 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    //var coordsLookup = [460460, 460480, 460440, 440440, 440460, 440480, 480440, 480460, 480480]
-    var coordsLookup = []
+    var coordsLookup = ["440440", "460440", "480440", "440460", "460460", "480460", "440480", "460480", "480480", 460500, 460420, 420460, 500460]
+    //var coordsLookup = []
     var barbsLvlLookup = 9, autoGetCapitalCoords = true
-    var warringCity = {'x': 514, 'y': 486}
+    var warringCity = {'x': 419, 'y': 558}
     
     var urlParams=[],cityId=0
     var sec=1e3, notified=false,workDuration=[600,3600,14400,28800], workChoice=1, today=new Date(),problemBuildings=[]
@@ -312,7 +311,7 @@ function style(t) {
     
     function checkForBarbs(level)
     {
-        if (level === undefined) level  = barbsLvlLookup
+        if (level === undefined) level = barbsLvlLookup
         if (coordsLookup.length == 0) coordsLookup = generateRegions()
         
         $.post('/rest/getmapmeta', {'metaTiles[]': coordsLookup}, function () {
@@ -333,7 +332,7 @@ function style(t) {
             res = sortByDist(res)
             var infoText = ''
             $.each(res, function(idx2, barb){
-                infoText += barb.y +':'+ barb.x + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance + "\n"
+                infoText += barb.y +':'+ barb.x + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance.toFixed(2) + "\n"
             })
             console.log(infoText)
         } )
@@ -418,7 +417,7 @@ function style(t) {
     
     function improveSettings()
     {
-        $('div#menuLinkWorldmap').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"margin-left: 7px; cursor: pointer; border: 2px solid white;\"></div>")
+        $('div#tutorialIconsContainer').after("<div id=\"findBarbs\" class=\"barbCounterSprite barbIcon\" style=\"position:fixed; left: 30px; top: 350px; cursor: pointer; border: 2px solid white;\"></div>")
     }
     
     $( document ).ready(function() {
