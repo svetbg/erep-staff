@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
-// @include      *bg*.tentlan.com/overview*
-// @version      1.3.1
+// @include      *.tentlan.com/overview*
+// @version      1.3.2
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -17,7 +17,7 @@ function style(t) {
     'use strict';
     style("select {display:table-cell;}");
     
-    //var coordsLookup = ["440440", "460440", "480440", "440460", "460460", "480460", "440480", "460480", "480480", 460500, 460420, 420460, 500460]
+    var coordsLookup = ["440440", "460440", "480440", "440460", "460460", "480460", "440480", "460480", "480480", 460500, 460420, 420460, 500460]
     var coordsLookup = []
     var barbsLvlLookup = 9, autoGetCapitalCoords = true, warringCity = {'x': 419, 'y': 558}
     
