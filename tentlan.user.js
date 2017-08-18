@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tentlan
 // @include      *.tentlan.com/overview*
-// @version      1.3.2
+// @version      1.3.3
 // @description  Overview Improvements
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -113,6 +113,7 @@ function style(t) {
         return false
     }
     
+    var productionStarted = false
     function collect(building, dialog)
     {
         var dfd = $.Deferred(), collected=false
@@ -124,6 +125,8 @@ function style(t) {
                 print('Try to harvest production')
                 collected = naturalClick(harvestBtn[0])
             }
+            
+            productionStarted = false
             
             dfd.resolve()
         }, sec)
@@ -143,14 +146,8 @@ function style(t) {
             if (startProgressBtn.length == 1) {
                 progressStarted = naturalClick(startProgressBtn[0])
             }
-            
-            if ( !(startProgressBtn.length == 1 && progressStarted) && startProgressBtn.length) {
-                console.log('=================> Setting problem building: '+building+' for city: '+cityId)
-                problemBuildings[cityId]=problemBuildings[cityId]||[]
-                problemBuildings[cityId].indexOf(building)==-1&&problemBuildings[cityId].push(building)
-            }
-            
             dfd.resolve()
+            
         }, 2*sec)
 
         return dfd.promise()
@@ -350,8 +347,8 @@ function style(t) {
     function splitAbsoluteCoordinates(absCoords)
     {
         absCoords = String(absCoords)
-        var $x = absCoords.substr(0, 3);
-        var $y = absCoords.substr(3);
+        var $x = absCoords.substr(0, 3) || 0;
+            var $y = absCoords.substr(3) || 0;
 
         return {'x' : parseInt($x), 'y' : parseInt($y)};
     }
@@ -421,6 +418,30 @@ function style(t) {
     
     $( document ).ready(function() {
         
+        //unsafeWindow.loadSocketConnection();
+        var webSocket = unsafeWindow.socket;
+        if (webSocket){
+            /*
+            webSocket.onopen = function () {
+                console.log('websocket opened');
+                webSocket.send('5:::'+JSON.stringify({"name":"authconnection","args":[{"userID":990,"socketToken":"73e8fa37e16c3a4b38b8d193880401fcad3b51d1"}]}))
+                
+
+            };
+            */
+            
+            webSocket.onmessage = function (e) {
+                console.log(e);
+
+            };
+            
+            webSocket.onclose = function () {
+                console.log('close');
+
+            };
+        }
+        
+        //setTimeout(function(){console.log($('#getEverythingData'))}, 10000)
         var random_number = generateRandomNumber(5, 10)
         //print('The page will refresh in '+random_number+' minutes')
         setTimeout(function(){
@@ -454,7 +475,17 @@ function style(t) {
         }, 14*sec)
         
         setInterval(checkNotifications, 60*sec)
-        
+        setInterval(function(){
+            //console.log(unsafeWindow)
+            //console.log($('.chatTextContainer'))
+            //var getEverythingData = $('#getEverythingData')
+            //var worldData = $('#worldMapData')
+            //console.log(worldData)
+            //if (worldData.length) {
+                //console.log(getEverythingData)
+                //console.log(worldData.text())
+            //}
+        }, sec)
     })
     
     function triggerMouseEvent (node, eventType) {
