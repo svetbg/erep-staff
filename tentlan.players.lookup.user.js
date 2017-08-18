@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         players.lookup
 // @include      *.tentlan.com/overview*
-// @version      0.0.1
+// @version      0.0.2
 // @description  Looks for players above specified threshold
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -12,10 +12,11 @@
 
 (function() {
     'use strict';
-
+    
     function interceptAjax (tempWindow) {
-        
-        var userThreshold = 1610000
+        var score = document.currentScript.dataset.score;
+        var userThreshold = 0.1
+        var userThresholdValue = score * userThreshold;
         var level = 9
         var matrixSize = 20
         //var warringCity = {'x': 419, 'y': 558}
@@ -46,7 +47,7 @@
                 })
                 
                 $.each(el.playerData, function (idx1, pl){
-                    if (pl.score >= userThreshold && !pl.flagVacation && !pl.flagInactive && !pl.flagBanned) {
+                    if (pl.score >= userThresholdValue && !pl.flagVacation && !pl.flagInactive && !pl.flagBanned) {
                         var $coordinates = calculateCoordinates(idx, idx1)
                         var distance = calculateDistance(warringCity, $coordinates)
                         res1.push({'name': pl.username, 'cityName': pl.cityName, 'guild': pl.guildTag || '', 'x': $coordinates.x, 'y': $coordinates.y, 'distance': distance, 'score': pl.score})
@@ -131,6 +132,8 @@
         var D                                   = document;
         var scriptNode                          = D.createElement ('script');
         scriptNode.type                         = "text/javascript";
+        scriptNode.dataset.score                = unsafeWindow.userData.score
+        //console.log(unsafeWindow);
         if (text)       scriptNode.textContent  = text;
         if (s_URL)      scriptNode.src          = s_URL;
         if (funcToRun)  scriptNode.textContent  = '(' + funcToRun.toString() + ')()';
@@ -138,6 +141,6 @@
         var targ    = D.getElementsByTagName('head')[0] || D.body || D.documentElement;
         targ.appendChild (scriptNode);
     }
-
+    
     addJS_Node (null, null, interceptAjax);
 })();
