@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         players.lookup
 // @include      *.tentlan.com/overview*
-// @version      0.0.2
+// @version      0.0.3
 // @description  Looks for players above specified threshold
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @author       Anonymous
@@ -63,9 +63,9 @@
             res = sortByDist(res)
             var barbarians = ''
             $.each(res, function(idx2, barb){
-                barbarians += barb.y +':'+ barb.x + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance.toFixed(2) + "\n"
+                barbarians += '=============> ' + barb.y +':'+ barb.x + ' ' + barb.name + ' ('+barb.tier+')' + ' ' + barb.distance.toFixed(2) + "\n"
             })
-            //console.log(warringCity)
+            console.log(warringCity)
             //console.log(barbarians)
             if (players)
                 console.log(players)
@@ -83,9 +83,9 @@
         function splitAbsoluteCoordinates(absCoords)
         {
             absCoords = String(absCoords)
-            var $x = absCoords.substr(0, 3);
-            var $y = absCoords.substr(3);
-
+            var $x = absCoords.substr(0, 3) || 0;
+            var $y = absCoords.substr(3) || 0;
+            
             return {'x' : parseInt($x), 'y' : parseInt($y)};
         }
 
@@ -133,7 +133,7 @@
         var scriptNode                          = D.createElement ('script');
         scriptNode.type                         = "text/javascript";
         scriptNode.dataset.score                = unsafeWindow.userData.score
-        //console.log(unsafeWindow);
+        
         if (text)       scriptNode.textContent  = text;
         if (s_URL)      scriptNode.src          = s_URL;
         if (funcToRun)  scriptNode.textContent  = '(' + funcToRun.toString() + ')()';
